@@ -1,25 +1,23 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="datamasuk"
-    sort-by="id_msk"
+    :items="desserts"
+    sort-by="calories"
     class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>DATA SUKU CADANG MASUK</v-toolbar-title>
+        <v-toolbar-title>RIWAYAT PERMINTAAN SUKU CADANG</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <div>
-              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-                Tambah
-              </v-btn>
-              <v-btn color="success" dark class="mb-2" v-bind="attrs" v-on="on">
-                Unduh
-              </v-btn>
-            </div>
+            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+              Tambah
+            </v-btn>
+            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+              Unduh
+            </v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -30,23 +28,33 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
-                    <v-select
-                      v-model="editedItem.nama_sc"
-                      label="Nama Suku Cadang"
-                      :items="items"
-                      required
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.jml_per_sc"
-                      label="Jumlah Masuk"
+                      v-model="editedItem.name"
+                      label="Dessert name"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.tgl_per_sc"
-                      label="Tanggal"
+                      v-model="editedItem.calories"
+                      label="Calories"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="editedItem.fat"
+                      label="Fat (g)"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="editedItem.carbs"
+                      label="Carbs (g)"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="editedItem.protein"
+                      label="Protein (g)"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -86,9 +94,6 @@
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
-    <template v-slot:[`item.id_msk`]="{ item }">
-      <v-chip> {{ item.id_msk }} </v-chip>
-    </template>
   </v-data-table>
 </template>
 <script>
@@ -97,37 +102,42 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      { text: 'No', align: 'start', sortable: false, value: 'id_msk' },
-      { text: 'Nama Suku Cadang', value: 'nama_sc' },
-      { text: 'Jumlah Masuk', value: 'jml_sc_msk' },
-      { text: 'Tanggal Masuk', value: 'tgl_sc_msk' },
+      {
+        text: 'No',
+        align: 'start',
+        sortable: false,
+        value: 'name',
+      },
+      { text: 'Nama Suku Cadang', value: 'calories' },
+      { text: 'Jumlah Permintaan', value: 'calories' },
+      { text: 'Nomor Kendaraan', value: 'calories' },
+      { text: 'Tanggal', value: 'calories' },
+      { text: 'Nama Peminta', value: 'calories' },
+      { text: 'Keterangan', value: 'fat' },
+      { text: 'Status', value: 'carbs' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
-    items: [
-      'Suku Cadang 1',
-      'Suku Cadang  2',
-      'Suku Cadang  3',
-      'Suku Cadang  4',
-    ],
-    datamasuk: [],
+    desserts: [],
     editedIndex: -1,
     editedItem: {
-      id_msk: 0,
-      nama_sc: '',
-      jml_sc_msk: 0,
-      tgl_sc_msk: 0,
+      name: '',
+      calories: 0,
+      fat: 0,
+      carbs: 0,
+      protein: 0,
     },
     defaultItem: {
-      id_msk: 0,
-      nama_sc: '',
-      jml_sc_msk: 0,
-      tgl_sc_msk: 0,
+      name: '',
+      calories: 0,
+      fat: 0,
+      carbs: 0,
+      protein: 0,
     },
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'Tambah Suku Cadang' : 'Edit Suku Cadang'
+      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     },
   },
 
@@ -146,66 +156,94 @@ export default {
 
   methods: {
     initialize() {
-      this.datamasuk = [
+      this.desserts = [
         {
-          id_msk: 1,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          name: 'Frozen Yogurt',
+          calories: 159,
+          fat: 6.0,
+          carbs: 24,
+          protein: 4.0,
         },
         {
-          id_msk: 2,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          name: 'Ice cream sandwich',
+          calories: 237,
+          fat: 9.0,
+          carbs: 37,
+          protein: 4.3,
         },
         {
-          id_msk: 3,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          name: 'Eclair',
+          calories: 262,
+          fat: 16.0,
+          carbs: 23,
+          protein: 6.0,
         },
         {
-          id_msk: 4,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          name: 'Cupcake',
+          calories: 305,
+          fat: 3.7,
+          carbs: 67,
+          protein: 4.3,
         },
         {
-          id_msk: 5,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          name: 'Gingerbread',
+          calories: 356,
+          fat: 16.0,
+          carbs: 49,
+          protein: 3.9,
         },
         {
-          id_msk: 6,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          name: 'Jelly bean',
+          calories: 375,
+          fat: 0.0,
+          carbs: 94,
+          protein: 0.0,
         },
         {
-          id_msk: 7,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          name: 'Lollipop',
+          calories: 392,
+          fat: 0.2,
+          carbs: 98,
+          protein: 0,
+        },
+        {
+          name: 'Honeycomb',
+          calories: 408,
+          fat: 3.2,
+          carbs: 87,
+          protein: 6.5,
+        },
+        {
+          name: 'Donut',
+          calories: 452,
+          fat: 25.0,
+          carbs: 51,
+          protein: 4.9,
+        },
+        {
+          name: 'KitKat',
+          calories: 518,
+          fat: 26.0,
+          carbs: 65,
+          protein: 7,
         },
       ]
     },
 
     editItem(item) {
-      this.editedIndex = this.datamasuk.indexOf(item)
+      this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem(item) {
-      this.editedIndex = this.datamasuk.indexOf(item)
+      this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
     deleteItemConfirm() {
-      this.datamasuk.splice(this.editedIndex, 1)
+      this.desserts.splice(this.editedIndex, 1)
       this.closeDelete()
     },
 
@@ -227,17 +265,12 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.datamasuk[this.editedIndex], this.editedItem)
+        Object.assign(this.desserts[this.editedIndex], this.editedItem)
       } else {
-        this.datamasuk.push(this.editedItem)
+        this.desserts.push(this.editedItem)
       }
       this.close()
     },
   },
 }
 </script>
-<style scoped>
-tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-</style>

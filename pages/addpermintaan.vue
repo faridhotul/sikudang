@@ -1,7 +1,7 @@
 <template>
   <v-card ref="form">
     <v-card-text>
-      <v-toolbar-title>TAMBAH DATA SUKU CADANG KELUAR</v-toolbar-title>
+      <v-toolbar-title>DATA PERMINTAAN SUKU CADANG</v-toolbar-title>
       <v-divider class="mx-4" inset vertical></v-divider>
       <v-text-field
         ref="name"
@@ -16,22 +16,11 @@
         class="v-text-field fieldset v-text-field v-input__control v-text-field"
       ></v-text-field>
       <v-text-field
-        ref="jmlkeluar"
+        ref="jmlpermintaan"
         v-model="address"
-        :rules="[() => !!address || 'Jumlah tidak boleh kosong']"
-        label="Jumlah Keluar"
+        :rules="[() => !!address || 'Jumlah Permintaan tidak boleh kosong']"
+        label="Jumlah Permintaan"
         placeholder="100"
-        required
-        filled
-        rounded
-        class="v-text-field fieldset v-text-field v-input__control v-text-field v-input__slot"
-      ></v-text-field>
-      <v-text-field
-        ref="tglmsk"
-        v-model="address"
-        :rules="[() => !!address || 'Tanggal tidak boleh kosong']"
-        label="Tanggal Masuk"
-        placeholder="DD/MM/YY"
         required
         filled
         rounded
@@ -49,10 +38,10 @@
         class="v-text-field fieldset v-text-field v-input__control v-text-field v-input__slot"
       ></v-text-field>
       <v-text-field
-        ref="tglkeluar"
+        ref="tglpermintaan"
         v-model="address"
-        :rules="[() => !!address || 'Tanggal tidak boleh kosong']"
-        label="Tanggal Keluar"
+        :rules="[() => !!address || 'Tanggal Permintaan tidak boleh kosong']"
+        label="Tanggal Permintaan"
         placeholder="DD/MM/YY"
         required
         filled
@@ -75,7 +64,7 @@
         v-model="address"
         :rules="[() => !!address || 'Keterangan tidak boleh kosong']"
         label="Keterangan"
-        placeholder="Keterangan barang keluar"
+        placeholder="Keterangan barang yang diminta"
         required
         filled
         rounded

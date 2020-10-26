@@ -102,12 +102,7 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      {
-        text: 'No',
-        align: 'start',
-        sortable: false,
-        value: 'name',
-      },
+      { text: 'No', align: 'start', sortable: false, value: 'id_kel' },
       { text: 'Nama Suku Cadang', value: 'calories' },
       { text: 'Jumlah Keluar', value: 'calories' },
       { text: 'Tanggal Keluar', value: 'calories' },

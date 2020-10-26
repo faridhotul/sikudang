@@ -1,13 +1,13 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="datamasuk"
-    sort-by="id_msk"
+    :items="permintaan"
+    sort-by="id_per_sc"
     class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>DATA SUKU CADANG MASUK</v-toolbar-title>
+        <v-toolbar-title>DATA PERMINTAAN SUKU CADANG</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
@@ -40,13 +40,35 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="editedItem.jml_per_sc"
-                      label="Jumlah Masuk"
+                      label="Jumlah Permintaan"
                     ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-select
+                      v-model="editedItem.plat_kend"
+                      label="Nomor Kendaraan"
+                      :items="items"
+                      required
+                    ></v-select>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="editedItem.tgl_per_sc"
                       label="Tanggal"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-select
+                      v-model="editedItem.nama_peminta"
+                      label="Nama Peminta"
+                      :items="items"
+                      required
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="editedItem.ket_per_sc"
+                      label="Keterangan"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -86,8 +108,8 @@
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
-    <template v-slot:[`item.id_msk`]="{ item }">
-      <v-chip> {{ item.id_msk }} </v-chip>
+    <template v-slot:[`item.id_per_sc`]="{ item }">
+      <v-chip> {{ item.id_per_sc }} </v-chip>
     </template>
   </v-data-table>
 </template>
@@ -97,10 +119,14 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      { text: 'No', align: 'start', sortable: false, value: 'id_msk' },
+      { text: 'No', align: 'start', sortable: false, value: 'id_per_sc' },
       { text: 'Nama Suku Cadang', value: 'nama_sc' },
-      { text: 'Jumlah Masuk', value: 'jml_sc_msk' },
-      { text: 'Tanggal Masuk', value: 'tgl_sc_msk' },
+      { text: 'Jumlah Permintaan', value: 'jml_per_sc' },
+      { text: 'Nomor Kendaraan', value: 'plat_kend' },
+      { text: 'Tanggal', value: 'tgl_per_sc' },
+      { text: 'Nama Peminta', value: 'nama_peminta' },
+      { text: 'Keterangan', value: 'ket_per_sc' },
+      { text: 'Status', value: 'status_per_sc' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
     items: [
@@ -109,25 +135,31 @@ export default {
       'Suku Cadang  3',
       'Suku Cadang  4',
     ],
-    datamasuk: [],
+    permintaan: [],
     editedIndex: -1,
     editedItem: {
-      id_msk: 0,
+      id_per_sc: 0,
       nama_sc: '',
-      jml_sc_msk: 0,
-      tgl_sc_msk: 0,
+      jml_per_sc: 0,
+      plat_kend: '',
+      tgl_per_sc: 0,
+      nama_peminta: '',
+      ket_per_sc: '',
     },
     defaultItem: {
-      id_msk: 0,
+      id_per_sc: 0,
       nama_sc: '',
-      jml_sc_msk: 0,
-      tgl_sc_msk: 0,
+      jml_per_sc: 0,
+      plat_kend: '',
+      tgl_per_sc: 0,
+      nama_peminta: '',
+      ket_per_sc: '',
     },
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'Tambah Suku Cadang' : 'Edit Suku Cadang'
+      return this.editedIndex === -1 ? 'Tambah Permintaan' : 'Edit Permintaan'
     },
   },
 
@@ -146,66 +178,69 @@ export default {
 
   methods: {
     initialize() {
-      this.datamasuk = [
+      this.permintaan = [
         {
-          id_msk: 1,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          id_per_sc: 1,
+          nama_sc: 'Kampas Rem',
+          jml_per_sc: 134,
+          plat_kend: 'AB 567 HH',
+          tgl_per_sc: 0,
+          nama_peminta: 'Encang',
+          ket_per_sc: 'Permintaan Kampas Rem',
         },
         {
-          id_msk: 2,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          id_per_sc: 2,
+          nama_sc: 'Kampas Rem',
+          jml_per_sc: 134,
+          plat_kend: 'AB 567 HH',
+          tgl_per_sc: 0,
+          nama_peminta: 'Encang',
+          ket_per_sc: 'Permintaan Kampas Rem',
         },
         {
-          id_msk: 3,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          id_per_sc: 3,
+          nama_sc: 'Kampas Rem',
+          jml_per_sc: 134,
+          plat_kend: 'AB 567 HH',
+          tgl_per_sc: 0,
+          nama_peminta: 'Encang',
+          ket_per_sc: 'Permintaan Kampas Rem',
         },
         {
-          id_msk: 4,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          id_per_sc: 4,
+          nama_sc: 'Kampas Rem',
+          jml_per_sc: 134,
+          plat_kend: 'AB 567 HH',
+          tgl_per_sc: 0,
+          nama_peminta: 'Encang',
+          ket_per_sc: 'Permintaan Kampas Rem',
         },
         {
-          id_msk: 5,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
-        },
-        {
-          id_msk: 6,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
-        },
-        {
-          id_msk: 7,
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          id_per_sc: 5,
+          nama_sc: 'Kampas Rem',
+          jml_per_sc: 134,
+          plat_kend: 'AB 567 HH',
+          tgl_per_sc: 0,
+          nama_peminta: 'Encang',
+          ket_per_sc: 'Permintaan Kampas Rem',
         },
       ]
     },
 
     editItem(item) {
-      this.editedIndex = this.datamasuk.indexOf(item)
+      this.editedIndex = this.permintaan.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem(item) {
-      this.editedIndex = this.datamasuk.indexOf(item)
+      this.editedIndex = this.permintaan.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
     deleteItemConfirm() {
-      this.datamasuk.splice(this.editedIndex, 1)
+      this.permintaan.splice(this.editedIndex, 1)
       this.closeDelete()
     },
 
@@ -227,17 +262,12 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.datamasuk[this.editedIndex], this.editedItem)
+        Object.assign(this.permintaan[this.editedIndex], this.editedItem)
       } else {
-        this.datamasuk.push(this.editedItem)
+        this.permintaan.push(this.editedItem)
       }
       this.close()
     },
   },
 }
 </script>
-<style scoped>
-tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-</style>

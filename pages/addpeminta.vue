@@ -1,15 +1,15 @@
 <template>
   <v-card ref="form">
     <v-card-text>
-      <v-toolbar-title>TAMBAH DATA KENDARAAN</v-toolbar-title>
+      <v-toolbar-title>TAMBAH DATA PEMINTA</v-toolbar-title>
       <v-divider class="mx-4" inset vertical></v-divider>
       <v-text-field
-        ref="nomorkend"
+        ref="peminta"
         v-model="name"
-        :rules="[() => !!name || 'Nomor Kendaraan tidak boleh kosong']"
+        :rules="[() => !!name || 'Data Peminta Kendaraan tidak boleh kosong']"
         :error-messages="errorMessages"
-        label="Nomor Kendaraan"
-        placeholder="AB 1234 WZ"
+        label="Data Peminta"
+        placeholder="Misha Karim"
         required
         filled
         rounded
