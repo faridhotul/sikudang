@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="sudang"
+    :items="listSudang"
     sort-by="id_sc"
     class="elevation-1"
   >
@@ -90,7 +90,7 @@
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
     <template v-slot:[`item.id_sc`]="{ item }">
-      <v-chip> {{ item.id_sc }} </v-chip>
+      <v-chip> {{ item.nomor }}</v-chip>
     </template>
   </v-data-table>
 </template>
@@ -126,6 +126,13 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'Tambah Suku Cadang' : 'Edit Suku Cadang'
     },
+    listSudang() {
+      let i = 1
+      return this.sudang.map((v) => {
+        v.nomor = i++
+        return v
+      })
+    },
   },
 
   watch: {
@@ -145,25 +152,21 @@ export default {
     initialize() {
       this.sudang = [
         {
-          id_sc: 1,
           nama_sc: 'Kampas Rem',
           stok_sc: 500,
           satuan_sc: 'pcs',
         },
         {
-          id_sc: 2,
           nama_sc: 'Oli Mesin',
           stok_sc: 1000,
           satuan_sc: 'liter',
         },
         {
-          id_sc: 3,
           nama_sc: 'Ban Luar',
           stok_sc: 60,
           satuan_sc: 'pcs',
         },
         {
-          id_sc: 4,
           nama_sc: 'Ban Dalam',
           stok_sc: 50,
           satuan_sc: 'pcs',

@@ -1,8 +1,8 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="desserts"
-    sort-by="calories"
+    :items="listSudang"
+    sort-by="id_sc"
     class="elevation-1"
   >
     <template v-slot:top>
@@ -12,12 +12,11 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Tambah
-            </v-btn>
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Unduh
-            </v-btn>
+            <div>
+              <v-btn color="success" dark class="mb-2" v-bind="attrs" v-on="on">
+                Unduh
+              </v-btn>
+            </div>
           </template>
           <v-card>
             <v-card-title>
@@ -29,7 +28,7 @@
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.name"
+                      v-model="editedItem.nama_sc"
                       label="Dessert name"
                     ></v-text-field>
                   </v-col>
@@ -94,6 +93,9 @@
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
+    <template v-slot:[`item.id_riw`]="{ item }">
+      <v-chip> {{ item.nomor }}</v-chip>
+    </template>
   </v-data-table>
 </template>
 <script>
@@ -102,36 +104,31 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      {
-        text: 'No',
-        align: 'start',
-        sortable: false,
-        value: 'name',
-      },
-      { text: 'Nama Suku Cadang', value: 'calories' },
-      { text: 'Jumlah Permintaan', value: 'calories' },
-      { text: 'Nomor Kendaraan', value: 'calories' },
-      { text: 'Tanggal', value: 'calories' },
-      { text: 'Nama Peminta', value: 'calories' },
-      { text: 'Keterangan', value: 'fat' },
-      { text: 'Status', value: 'carbs' },
-      { text: 'Aksi', value: 'actions', sortable: false },
+      { text: 'No', align: 'start', sortable: false, value: 'id_riw' },
+      { text: 'Nama Suku Cadang', value: 'nama_sc' },
+      { text: 'Jumlah Permintaan', value: 'jml_per_sc' },
+      { text: 'Nomor Kendaraan', value: 'plat_kend' },
+      { text: 'Tanggal Permintaan', value: 'tgl_per_sc' },
+      { text: 'Nama Peminta', value: 'nama_peminta' },
+      { text: 'Status', value: 'status_per_sc' },
     ],
     desserts: [],
     editedIndex: -1,
     editedItem: {
-      name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      id_riw: 0,
+      nama_sc: '',
+      plat_kend: '',
+      tgl_per_sc: '',
+      nama_peminta: '',
+      status_per_sc: '',
     },
     defaultItem: {
-      name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      id_riw: 0,
+      nama_sc: '',
+      plat_kend: '',
+      tgl_per_sc: '',
+      nama_peminta: '',
+      status_per_sc: '',
     },
   }),
 

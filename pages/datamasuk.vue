@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="datamasuk"
+    :items="listMasuk"
     sort-by="id_msk"
     class="elevation-1"
   >
@@ -39,13 +39,13 @@
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.jml_per_sc"
+                      v-model="editedItem.jml_sc_msk"
                       label="Jumlah Masuk"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.tgl_per_sc"
+                      v-model="editedItem.tgl_sc_msk"
                       label="Tanggal"
                     ></v-text-field>
                   </v-col>
@@ -87,7 +87,7 @@
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
     <template v-slot:[`item.id_msk`]="{ item }">
-      <v-chip> {{ item.id_msk }} </v-chip>
+      <v-chip> {{ item.nomor }}</v-chip>
     </template>
   </v-data-table>
 </template>
@@ -129,6 +129,13 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'Tambah Suku Cadang' : 'Edit Suku Cadang'
     },
+    listMasuk() {
+      let i = 1
+      return this.datamasuk.map((v) => {
+        v.nomor = i++
+        return v
+      })
+    },
   },
 
   watch: {
@@ -148,43 +155,36 @@ export default {
     initialize() {
       this.datamasuk = [
         {
-          id_msk: 1,
           nama_sc: 'Oli',
           jml_sc_msk: 120,
           tgl_sc_msk: 0,
         },
         {
-          id_msk: 2,
           nama_sc: 'Oli',
           jml_sc_msk: 120,
           tgl_sc_msk: 0,
         },
         {
-          id_msk: 3,
           nama_sc: 'Oli',
           jml_sc_msk: 120,
           tgl_sc_msk: 0,
         },
         {
-          id_msk: 4,
           nama_sc: 'Oli',
           jml_sc_msk: 120,
           tgl_sc_msk: 0,
         },
         {
-          id_msk: 5,
           nama_sc: 'Oli',
           jml_sc_msk: 120,
           tgl_sc_msk: 0,
         },
         {
-          id_msk: 6,
           nama_sc: 'Oli',
           jml_sc_msk: 120,
           tgl_sc_msk: 0,
         },
         {
-          id_msk: 7,
           nama_sc: 'Oli',
           jml_sc_msk: 120,
           tgl_sc_msk: 0,

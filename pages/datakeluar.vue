@@ -1,23 +1,25 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="desserts"
-    sort-by="calories"
+    :items="listKeluar"
+    sort-by="id_kel"
     class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>DATA SUKU CADANG MASUK</v-toolbar-title>
+        <v-toolbar-title>DATA SUKU CADANG KELUAR</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Tambah
-            </v-btn>
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Unduh
-            </v-btn>
+            <div>
+              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+                Tambah
+              </v-btn>
+              <v-btn color="success" dark class="mb-2" v-bind="attrs" v-on="on">
+                Unduh
+              </v-btn>
+            </div>
           </template>
           <v-card>
             <v-card-title>
@@ -28,34 +30,40 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
+                    <v-select
+                      v-model="editedItem.nama_sc"
+                      label="Nama Suku Cadang"
+                      :items="items"
+                      required
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.name"
-                      label="Dessert name"
+                      v-model="editedItem.jml_sc_kel"
+                      label="Jumlah Keluar"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.calories"
-                      label="Calories"
+                      v-model="editedItem.tgl_sc_kel"
+                      label="Tanggal keluar"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.fat"
-                      label="Fat (g)"
-                    ></v-text-field>
+                    <v-select
+                      v-model="editedItem.plat_kend"
+                      label="Nomor Kendaraan"
+                      :items="items"
+                      required
+                    ></v-select>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.carbs"
-                      label="Carbs (g)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.protein"
-                      label="Protein (g)"
-                    ></v-text-field>
+                    <v-select
+                      v-model="editedItem.nama_peminta"
+                      label="Nama Peminta"
+                      :items="items"
+                      required
+                    ></v-select>
                   </v-col>
                 </v-row>
               </v-container>
@@ -94,6 +102,9 @@
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
+    <template v-slot:[`item.id_kel`]="{ item }">
+      <v-chip> {{ item.nomor }}</v-chip>
+    </template>
   </v-data-table>
 </template>
 <script>
@@ -103,34 +114,49 @@ export default {
     dialogDelete: false,
     headers: [
       { text: 'No', align: 'start', sortable: false, value: 'id_kel' },
-      { text: 'Nama Suku Cadang', value: 'calories' },
-      { text: 'Jumlah Keluar', value: 'calories' },
-      { text: 'Tanggal Keluar', value: 'calories' },
-      { text: 'Nomor Kendaraan', value: 'calories' },
-      { text: 'Nama Peminta', value: 'calories' },
+      { text: 'Nama Suku Cadang', value: 'nama_sc' },
+      { text: 'Jumlah Keluar', value: 'jml_sc_kel' },
+      { text: 'Tanggal Keluar', value: 'tgl_sc_kel' },
+      { text: 'Nomor Kendaraan', value: 'plat_kend' },
+      { text: 'Nama Peminta', value: 'nama_peminta' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
-    desserts: [],
+    items: [
+      'Suku Cadang 1',
+      'Suku Cadang  2',
+      'Suku Cadang  3',
+      'Suku Cadang  4',
+    ],
+    datakeluar: [],
     editedIndex: -1,
     editedItem: {
-      name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      id_kel: 0,
+      nama_sc: '',
+      jml_sc_kel: 0,
+      tgl_sc_kel: Date,
+      plat_kend: '',
+      nama_peminta: '',
     },
     defaultItem: {
-      name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      id_kel: 0,
+      nama_sc: '',
+      jml_sc_kel: 0,
+      tgl_sc_kel: Date,
+      plat_kend: '',
+      nama_peminta: '',
     },
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      return this.editedIndex === -1 ? 'Tambah Data Keluar' : 'Edit Data'
+    },
+    listKeluar() {
+      let i = 1
+      return this.datakeluar.map((v) => {
+        v.nomor = i++
+        return v
+      })
     },
   },
 
@@ -149,94 +175,59 @@ export default {
 
   methods: {
     initialize() {
-      this.desserts = [
+      this.datakeluar = [
         {
-          name: 'Frozen Yogurt',
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
+          nama_sc: 'Kampas Kopling',
+          jml_sc_kel: 100,
+          tgl_sc_kel: Date,
+          plat_kend: 'AB 12345 KK',
+          nama_peminta: 'Kendal',
         },
         {
-          name: 'Ice cream sandwich',
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
+          nama_sc: 'Kampas Kopling',
+          jml_sc_kel: 100,
+          tgl_sc_kel: Date,
+          plat_kend: 'AB 12345 KK',
+          nama_peminta: 'Kendal',
         },
         {
-          name: 'Eclair',
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
+          nama_sc: 'Kampas Kopling',
+          jml_sc_kel: 100,
+          tgl_sc_kel: Date,
+          plat_kend: 'AB 12345 KK',
+          nama_peminta: 'Kendal',
         },
         {
-          name: 'Cupcake',
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
+          nama_sc: 'Kampas Kopling',
+          jml_sc_kel: 100,
+          tgl_sc_kel: Date,
+          plat_kend: 'AB 12345 KK',
+          nama_peminta: 'Kendal',
         },
         {
-          name: 'Gingerbread',
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-        },
-        {
-          name: 'Jelly bean',
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-        },
-        {
-          name: 'Lollipop',
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-        },
-        {
-          name: 'Honeycomb',
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-        },
-        {
-          name: 'Donut',
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-        },
-        {
-          name: 'KitKat',
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
+          nama_sc: 'Kampas Kopling',
+          jml_sc_kel: 100,
+          tgl_sc_kel: Date,
+          plat_kend: 'AB 12345 KK',
+          nama_peminta: 'Kendal',
         },
       ]
     },
 
     editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item)
+      this.editedIndex = this.datakeluar.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item)
+      this.editedIndex = this.datakeluar.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
     deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1)
+      this.datakeluar.splice(this.editedIndex, 1)
       this.closeDelete()
     },
 
@@ -258,9 +249,9 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem)
+        Object.assign(this.datakeluar[this.editedIndex], this.editedItem)
       } else {
-        this.desserts.push(this.editedItem)
+        this.datakeluar.push(this.editedItem)
       }
       this.close()
     },

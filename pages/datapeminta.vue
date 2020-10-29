@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="datapeminta"
+    :items="listPeminta"
     sort-by="id_peminta"
     class="elevation-1"
   >
@@ -73,7 +73,7 @@
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
     <template v-slot:[`item.id_peminta`]="{ item }">
-      <v-chip> {{ item.id_peminta }} </v-chip>
+      <v-chip> {{ item.nomor }}</v-chip>
     </template>
   </v-data-table>
 </template>
@@ -85,6 +85,7 @@ export default {
     headers: [
       { text: 'No', align: 'start', sortable: false, value: 'id_peminta' },
       { text: 'Nama Peminta', value: 'nama_peminta' },
+      { text: 'Aksi', value: 'actions', sortable: false },
     ],
     datapeminta: [],
     editedIndex: -1,
@@ -103,6 +104,13 @@ export default {
       return this.editedIndex === -1
         ? 'Tambah Data Peminta'
         : 'Edit Data Peminta'
+    },
+    listPeminta() {
+      let i = 1
+      return this.datapeminta.map((v) => {
+        v.nomor = i++
+        return v
+      })
     },
   },
 
@@ -123,23 +131,18 @@ export default {
     initialize() {
       this.datapeminta = [
         {
-          id_peminta: 1,
           nama_peminta: 'Chelsea',
         },
         {
-          id_peminta: 2,
           nama_peminta: 'Cristine',
         },
         {
-          id_peminta: 3,
           nama_peminta: 'Juliete',
         },
         {
-          id_peminta: 4,
           nama_peminta: 'Wenny',
         },
         {
-          id_peminta: 5,
           nama_peminta: 'krenny',
         },
       ]

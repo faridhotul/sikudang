@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="datkend"
+    :items="listKendaraan"
     sort-by="id_kend"
     class="elevation-1"
   >
@@ -73,7 +73,7 @@
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
     <template v-slot:[`item.id_kend`]="{ item }">
-      <v-chip> {{ item.id_kend }} </v-chip>
+      <v-chip> {{ item.nomor }}</v-chip>
     </template>
   </v-data-table>
 </template>
@@ -105,6 +105,13 @@ export default {
         ? 'Tambah Plat Kendaraan'
         : 'Edit Plat Kendaraan'
     },
+    listKendaraan() {
+      let i = 1
+      return this.datkend.map((v) => {
+        v.nomor = i++
+        return v
+      })
+    },
   },
 
   watch: {
@@ -124,31 +131,24 @@ export default {
     initialize() {
       this.datkend = [
         {
-          id_kend: 1,
           plat_kend: 'AB 12345 XY',
         },
         {
-          id_kend: 2,
           plat_kend: 'AB 345 VK',
         },
         {
-          id_kend: 3,
           plat_kend: 'AB 5678 EE',
         },
         {
-          id_kend: 4,
           plat_kend: 'AB 1234 LL',
         },
         {
-          id_kend: 5,
           plat_kend: 'AB 0987 HH',
         },
         {
-          id_kend: 6,
           plat_kend: 'AB 0989 OO',
         },
         {
-          id_kend: 7,
           plat_kend: 'AB 8090 HH',
         },
       ]

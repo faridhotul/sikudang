@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="permintaan"
+    :items="listPermintaan"
     sort-by="id_per_sc"
     class="elevation-1"
   >
@@ -109,7 +109,7 @@
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
     <template v-slot:[`item.id_per_sc`]="{ item }">
-      <v-chip> {{ item.id_per_sc }} </v-chip>
+      <v-chip> {{ item.nomor }}</v-chip>
     </template>
   </v-data-table>
 </template>
@@ -161,6 +161,13 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'Tambah Permintaan' : 'Edit Permintaan'
     },
+    listPermintaan() {
+      let i = 1
+      return this.permintaan.map((v) => {
+        v.nomor = i++
+        return v
+      })
+    },
   },
 
   watch: {
@@ -180,7 +187,6 @@ export default {
     initialize() {
       this.permintaan = [
         {
-          id_per_sc: 1,
           nama_sc: 'Kampas Rem',
           jml_per_sc: 134,
           plat_kend: 'AB 567 HH',
@@ -189,7 +195,6 @@ export default {
           ket_per_sc: 'Permintaan Kampas Rem',
         },
         {
-          id_per_sc: 2,
           nama_sc: 'Kampas Rem',
           jml_per_sc: 134,
           plat_kend: 'AB 567 HH',
@@ -198,7 +203,6 @@ export default {
           ket_per_sc: 'Permintaan Kampas Rem',
         },
         {
-          id_per_sc: 3,
           nama_sc: 'Kampas Rem',
           jml_per_sc: 134,
           plat_kend: 'AB 567 HH',
@@ -207,7 +211,6 @@ export default {
           ket_per_sc: 'Permintaan Kampas Rem',
         },
         {
-          id_per_sc: 4,
           nama_sc: 'Kampas Rem',
           jml_per_sc: 134,
           plat_kend: 'AB 567 HH',
@@ -216,7 +219,6 @@ export default {
           ket_per_sc: 'Permintaan Kampas Rem',
         },
         {
-          id_per_sc: 5,
           nama_sc: 'Kampas Rem',
           jml_per_sc: 134,
           plat_kend: 'AB 567 HH',
