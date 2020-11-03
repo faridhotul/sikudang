@@ -193,6 +193,7 @@ export default {
           tgl_per_sc: 0,
           nama_peminta: 'Encang',
           ket_per_sc: 'Permintaan Kampas Rem',
+          status_per_sc: 'Ini status',
         },
         {
           nama_sc: 'Kampas Rem',

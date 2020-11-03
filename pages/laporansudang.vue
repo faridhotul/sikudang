@@ -1,8 +1,8 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="desserts"
-    sort-by="calories"
+    :items="listLaporan"
+    sort-by="id_riw"
     class="elevation-1"
   >
     <template v-slot:top>
@@ -12,77 +12,16 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Tambah
-            </v-btn>
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Unduh
-            </v-btn>
+            <div>
+              <v-btn color="success" dark class="mb-2" v-bind="attrs" v-on="on">
+                Unduh
+              </v-btn>
+            </div>
           </template>
           <v-card>
             <v-card-title>
               <span class="headline">{{ formTitle }}</span>
             </v-card-title>
-
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.name"
-                      label="Dessert name"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.calories"
-                      label="Calories"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.fat"
-                      label="Fat (g)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.carbs"
-                      label="Carbs (g)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.protein"
-                      label="Protein (g)"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Cancel </v-btn>
-              <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="headline"
-              >Anda yakin ingin menghapusnya?</v-card-title
-            >
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete"
-                >Cancel</v-btn
-              >
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                >OK</v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-card-actions>
           </v-card>
         </v-dialog>
       </v-toolbar>
@@ -90,9 +29,13 @@
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
       <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+      <v-icon>fas fa-list</v-icon>
     </template>
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
+    </template>
+    <template v-slot:[`item.id_lap`]="{ item }">
+      <v-chip> {{ item.nomor }}</v-chip>
     </template>
   </v-data-table>
 </template>
@@ -102,40 +45,41 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      {
-        text: 'No',
-        align: 'start',
-        sortable: false,
-        value: 'name',
-      },
-      { text: 'Nama Suku Cadang', value: 'calories' },
-      { text: 'Jumlah Keluar', value: 'calories' },
-      { text: 'Jumlah Masuk', value: 'calories' },
-      { text: 'Tanggal', value: 'calories' },
-      { text: 'Satuan Suku Cadang', value: 'carbs' },
+      { text: 'No', align: 'start', sortable: false, value: 'id_lap' },
+      { text: 'Nama Suku Cadang', value: 'nama_sc' },
+      { text: 'Jumlah Keluar', value: 'jml_sc_kel' },
+      { text: 'Jumlah Masuk', value: 'jml_sc_msk' },
+      { text: 'Stok Akhir', value: 'stock_akhir' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
-    desserts: [],
+    laporan: [],
     editedIndex: -1,
     editedItem: {
-      name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      id_lap: 0,
+      nama_sc: '',
+      jml_sc_kel: 0,
+      jml_sc_msk: 0,
+      stock_akhir: 0,
     },
     defaultItem: {
-      name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      id_lap: 0,
+      nama_sc: '',
+      jml_sc_kel: 0,
+      jml_sc_msk: 0,
+      stock_akhir: 0,
     },
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+    },
+    listLaporan() {
+      let i = 1
+      return this.laporan.map((v) => {
+        v.nomor = i++
+        return v
+      })
     },
   },
 
@@ -154,94 +98,60 @@ export default {
 
   methods: {
     initialize() {
-      this.desserts = [
+      this.laporan = [
         {
-          name: 'Frozen Yogurt',
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
+          nama_sc: 'Kampas Kompling',
+          jml_sc_kel: 2,
+          jml_sc_msk: 0,
+          stock_akhir: 45,
         },
         {
-          name: 'Ice cream sandwich',
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
+          nama_sc: 'Kampas Kompling',
+          jml_sc_kel: 2,
+          jml_sc_msk: 0,
+          stock_akhir: 45,
         },
         {
-          name: 'Eclair',
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
+          nama_sc: 'Kampas Kompling',
+          jml_sc_kel: 2,
+          jml_sc_msk: 0,
+          stock_akhir: 45,
         },
         {
-          name: 'Cupcake',
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
+          nama_sc: 'Kampas Kompling',
+          jml_sc_kel: 2,
+          jml_sc_msk: 0,
+          stock_akhir: 45,
         },
         {
-          name: 'Gingerbread',
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
+          nama_sc: 'Kampas Kompling',
+          jml_sc_kel: 2,
+          jml_sc_msk: 0,
+          stock_akhir: 45,
         },
         {
-          name: 'Jelly bean',
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-        },
-        {
-          name: 'Lollipop',
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-        },
-        {
-          name: 'Honeycomb',
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-        },
-        {
-          name: 'Donut',
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-        },
-        {
-          name: 'KitKat',
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
+          nama_sc: 'Kampas Kompling',
+          jml_sc_kel: 2,
+          jml_sc_msk: 0,
+          stock_akhir: 45,
         },
       ]
     },
 
     editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item)
+      this.editedIndex = this.laporan.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item)
+      this.editedIndex = this.laporan.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
     deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1)
+      this.laporan.splice(this.editedIndex, 1)
       this.closeDelete()
     },
 
@@ -263,9 +173,9 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem)
+        Object.assign(this.laporan[this.editedIndex], this.editedItem)
       } else {
-        this.desserts.push(this.editedItem)
+        this.laporan.push(this.editedItem)
       }
       this.close()
     },
