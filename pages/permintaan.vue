@@ -54,7 +54,7 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-menu
                       ref="menu"
-                      v-model="tgl_per_sc"
+                      v-model="menu"
                       :close-on-content-click="false"
                       :return-value.sync="date"
                       transition="scale-transition"
@@ -77,13 +77,13 @@
                         scrollable
                       >
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="tgl_per_sc = false">
+                        <v-btn text color="primary" @click="menu = false">
                           Cancel
                         </v-btn>
                         <v-btn
                           text
                           color="primary"
-                          @click="$refs.editedItemtgl_per_sc.save(tgl_per_sc)"
+                          @click="$refs.menu.save(date)"
                         >
                           OK
                         </v-btn>
