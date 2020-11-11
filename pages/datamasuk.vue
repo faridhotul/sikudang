@@ -10,7 +10,7 @@
         <v-toolbar-title>DATA SUKU CADANG MASUK</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="800px">
           <template v-slot:activator="{ on, attrs }">
             <div>
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
@@ -44,10 +44,43 @@
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.tgl_sc_msk"
-                      label="Tanggal"
-                    ></v-text-field>
+                    <v-menu
+                      ref="menu"
+                      v-model="menu"
+                      :close-on-content-click="false"
+                      :return-value.sync="editedItem.tgl_sc_msk"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="editedItem.tgl_sc_msk"
+                          label="Tanggal Masuk"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="editedItem.tgl_sc_msk"
+                        no-title
+                        scrollable
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="menu = false">
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.menu.save(editedItem.tgl_sc_msk)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-menu>
                   </v-col>
                 </v-row>
               </v-container>
@@ -94,6 +127,7 @@
 <script>
 export default {
   data: () => ({
+    menu: false,
     dialog: false,
     dialogDelete: false,
     headers: [
@@ -114,14 +148,14 @@ export default {
     editedItem: {
       id_msk: 0,
       nama_sc: '',
-      jml_sc_msk: 0,
-      tgl_sc_msk: 0,
+      jml_sc_msk: null,
+      tgl_sc_msk: '',
     },
     defaultItem: {
       id_msk: 0,
       nama_sc: '',
-      jml_sc_msk: 0,
-      tgl_sc_msk: 0,
+      jml_sc_msk: null,
+      tgl_sc_msk: '',
     },
   }),
 
@@ -157,37 +191,37 @@ export default {
         {
           nama_sc: 'Oli',
           jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          tgl_sc_msk: '2020-11-18',
         },
         {
           nama_sc: 'Oli',
           jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          tgl_sc_msk: '2020-11-18',
         },
         {
           nama_sc: 'Oli',
           jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          tgl_sc_msk: '2020-11-18',
         },
         {
           nama_sc: 'Oli',
           jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          tgl_sc_msk: '2020-11-18',
         },
         {
           nama_sc: 'Oli',
           jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          tgl_sc_msk: '2020-11-18',
         },
         {
           nama_sc: 'Oli',
           jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          tgl_sc_msk: '2020-11-18',
         },
         {
           nama_sc: 'Oli',
           jml_sc_msk: 120,
-          tgl_sc_msk: 0,
+          tgl_sc_msk: '2020-11-18',
         },
       ]
     },

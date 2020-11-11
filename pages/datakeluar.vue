@@ -10,7 +10,7 @@
         <v-toolbar-title>DATA SUKU CADANG KELUAR</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="800px">
           <template v-slot:activator="{ on, attrs }">
             <div>
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
@@ -44,10 +44,43 @@
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.tgl_sc_kel"
-                      label="Tanggal keluar"
-                    ></v-text-field>
+                    <v-menu
+                      ref="menu"
+                      v-model="menu"
+                      :close-on-content-click="false"
+                      :return-value.sync="editedItem.tgl_sc_kel"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="editedItem.tgl_sc_kel"
+                          label="Tanggal Keluar"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="editedItem.tgl_sc_kel"
+                        no-title
+                        scrollable
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="menu = false">
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.menu.save(editedItem.tgl_sc_kel)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-menu>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-select
@@ -110,6 +143,7 @@
 <script>
 export default {
   data: () => ({
+    menu: false,
     dialog: false,
     dialogDelete: false,
     headers: [
@@ -132,16 +166,16 @@ export default {
     editedItem: {
       id_kel: 0,
       nama_sc: '',
-      jml_sc_kel: 0,
-      tgl_sc_kel: Date,
+      jml_sc_kel: null,
+      tgl_sc_kel: '',
       plat_kend: '',
       nama_peminta: '',
     },
     defaultItem: {
       id_kel: 0,
       nama_sc: '',
-      jml_sc_kel: 0,
-      tgl_sc_kel: Date,
+      jml_sc_kel: null,
+      tgl_sc_kel: '',
       plat_kend: '',
       nama_peminta: '',
     },
@@ -179,35 +213,35 @@ export default {
         {
           nama_sc: 'Kampas Kopling',
           jml_sc_kel: 100,
-          tgl_sc_kel: Date,
+          tgl_sc_kel: '2020-11-18',
           plat_kend: 'AB 12345 KK',
           nama_peminta: 'Kendal',
         },
         {
           nama_sc: 'Kampas Kopling',
           jml_sc_kel: 100,
-          tgl_sc_kel: Date,
+          tgl_sc_kel: '2020-11-18',
           plat_kend: 'AB 12345 KK',
           nama_peminta: 'Kendal',
         },
         {
           nama_sc: 'Kampas Kopling',
           jml_sc_kel: 100,
-          tgl_sc_kel: Date,
+          tgl_sc_kel: '2020-11-18',
           plat_kend: 'AB 12345 KK',
           nama_peminta: 'Kendal',
         },
         {
           nama_sc: 'Kampas Kopling',
           jml_sc_kel: 100,
-          tgl_sc_kel: Date,
+          tgl_sc_kel: '2020-11-18',
           plat_kend: 'AB 12345 KK',
           nama_peminta: 'Kendal',
         },
         {
           nama_sc: 'Kampas Kopling',
           jml_sc_kel: 100,
-          tgl_sc_kel: Date,
+          tgl_sc_kel: '2020-11-18',
           plat_kend: 'AB 12345 KK',
           nama_peminta: 'Kendal',
         },

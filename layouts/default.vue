@@ -1,3 +1,4 @@
+/* eslint-disable vue/no-template-key */
 <template>
   <v-app dark>
     <v-navigation-drawer
@@ -8,20 +9,32 @@
       app
     >
       <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
+        <v-list-group
+          v-for="item in items"
+          :key="item.title"
+          v-model="item.active"
+          :prepend-icon="item.action"
+          no-action
         >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title"></v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            v-for="child in item.items"
+            :key="child.title"
+            :to="child.to"
+            router
+            exact
+            link
+          >
+            <v-list-item-content>
+              <v-list-item-title v-text="child.title"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app>
@@ -71,14 +84,37 @@ export default {
       fixed: false,
       items: [
         {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/',
+          action: 'mdi-silverware-fork-knife',
+          active: false,
+          items: [
+            { title: 'Suku Cadang', to: '/sukucadang' },
+            { title: 'Suku Cadang Masuk', to: '/datamasuk' },
+            { title: 'Suku Cadang Keluar', to: '/datakeluar' },
+            { title: 'Kendaraan', to: '/datakendaraan' },
+            { title: 'Peminta', to: '/datapeminta' },
+          ],
+          title: 'MASTER',
         },
         {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire',
+          action: 'mdi-silverware-fork-knife',
+          active: false,
+          items: [
+            { title: 'Permintaan', to: '/permintaan' },
+            { title: 'Riwayat Permintaan', to: '/riwayat' },
+          ],
+          title: 'PERMINTAAN',
+        },
+        {
+          action: 'mdi-silverware-fork-knife',
+          active: false,
+          items: [{ title: 'Laporan Masuk-Keluar', to: '/laporansudang' }],
+          title: 'LAPORAN',
+        },
+        {
+          action: 'mdi-silverware-fork-knife',
+          active: false,
+          items: [{ title: 'Keluar', to: '/laporansudang' }],
+          title: 'PENGATURAN',
         },
       ],
       miniVariant: false,
