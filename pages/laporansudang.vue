@@ -57,16 +57,16 @@ export default {
     editedItem: {
       id_lap: 0,
       nama_sc: '',
-      jml_sc_kel: 0,
-      jml_sc_msk: 0,
-      stock_akhir: 0,
+      jml_sc_kel: null,
+      jml_sc_msk: null,
+      stock_akhir: null,
     },
     defaultItem: {
       id_lap: 0,
       nama_sc: '',
-      jml_sc_kel: 0,
-      jml_sc_msk: 0,
-      stock_akhir: 0,
+      jml_sc_kel: null,
+      jml_sc_msk: null,
+      stock_akhir: null,
     },
   }),
 

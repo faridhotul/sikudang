@@ -36,7 +36,7 @@
                         label="Nama Suku Cadang"
                         :items="items"
                         :rules="[
-                          (v) => !!v || 'Nama Suku Cadang Tidak boleh kosong',
+                          (v) => !!v || 'Nama Suku Cadang tidak boleh kosong',
                         ]"
                         required
                       ></v-select>
@@ -47,7 +47,7 @@
                         label="Jumlah Permintaan"
                         required
                         :rules="[
-                          (v) => !!v || 'Jumlah Permintaan Tidak boleh kosong',
+                          (v) => !!v || 'Jumlah Permintaan tidak boleh kosong',
                         ]"
                       ></v-text-field>
                     </v-col>
@@ -57,6 +57,9 @@
                         label="Nomor Kendaraan"
                         :items="items"
                         required
+                        :rules="[
+                          (v) => !!v || 'Nomor Kendaraan tidak boleh kosong',
+                        ]"
                       ></v-select>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
@@ -100,10 +103,11 @@
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-select
-                        v-model="editedItem.nama_peminta"
-                        label="Nama Peminta"
+                        v-model="editedItem.nama_user"
+                        label="Nama User"
                         :items="items"
                         required
+                        :rules="[(v) => !!v || 'Nama User tidak boleh kosong']"
                       ></v-select>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
@@ -144,18 +148,41 @@
           </v-card>
         </v-dialog>
         <v-dialog v-model="dialogDetail" max-width="500px">
-          <v-card>
+          <v-card v-if="detailValue !== null">
             <v-card-title class="headline">Detail Permintaan</v-card-title>
             <v-card-text>
-              {{ detailValue.nama_sc }},{{ detailValue.jml_per_sc }}
+              <ul>
+                <li><b>Nama Suku Cadang : </b> {{ detailValue.nama_sc }}</li>
+                <li>
+                  <b>Jumlah Permintaan : </b> {{ detailValue.jml_per_sc }}
+                </li>
+                <li><b>Nomor Kendaraan : </b> {{ detailValue.plat_kend }}</li>
+                <li>
+                  <b>Tanggal Permintaan : </b> {{ detailValue.tgl_per_sc }}
+                </li>
+                <li><b>Nama User : </b> {{ detailValue.nama_user }}</li>
+                <li><b>Status : </b> {{ detailValue.status_per_sc }}</li>
+              </ul>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDetail"
-                >Cancel</v-btn
+                >Tutup</v-btn
               >
-              <v-btn color="blue darken-1" text @click="tolak">Tolak</v-btn>
-              <v-btn color="blue darken-1" text @click="setuju">Setujui</v-btn>
+              <v-btn
+                v-if="detailValue.status_per_sc == 'Diajukan'"
+                color="blue darken-1"
+                text
+                @click="tolak"
+                >Tolak</v-btn
+              >
+              <v-btn
+                v-if="detailValue.status_per_sc == 'Diajukan'"
+                color="blue darken-1"
+                text
+                @click="setuju"
+                >Setujui</v-btn
+              >
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -192,8 +219,7 @@ export default {
       { text: 'Jumlah Permintaan', value: 'jml_per_sc' },
       { text: 'Nomor Kendaraan', value: 'plat_kend' },
       { text: 'Tanggal', value: 'tgl_per_sc' },
-      { text: 'Nama Peminta', value: 'nama_peminta' },
-      { text: 'Keterangan', value: 'ket_per_sc' },
+      { text: 'Nama Peminta', value: 'nama_user' },
       { text: 'Status', value: 'status_per_sc' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
@@ -211,7 +237,7 @@ export default {
       jml_per_sc: null,
       plat_kend: '',
       tgl_per_sc: '',
-      nama_peminta: '',
+      nama_user: '',
       ket_per_sc: '',
     },
     defaultItem: {
@@ -220,7 +246,7 @@ export default {
       jml_per_sc: null,
       plat_kend: '',
       tgl_per_sc: '',
-      nama_peminta: '',
+      nama_user: '',
       ket_per_sc: '',
     },
   }),
@@ -262,41 +288,40 @@ export default {
           jml_per_sc: 134,
           plat_kend: 'AB 567 HH',
           tgl_per_sc: '2020-11-18',
-          nama_peminta: 'Encang',
-          ket_per_sc: 'Permintaan Kampas Rem',
-          status_per_sc: 'Ini status',
+          nama_user: 'Encang',
+          status_per_sc: 'Diajukan',
         },
         {
           nama_sc: 'Kampas Rem',
           jml_per_sc: 134,
           plat_kend: 'AB 567 HH',
           tgl_per_sc: '2020-11-18',
-          nama_peminta: 'Encang',
-          ket_per_sc: 'Permintaan Kampas Rem',
+          nama_user: 'Encang',
+          status_per_sc: 'Ditolak',
         },
         {
           nama_sc: 'Kampas Rem',
           jml_per_sc: 134,
           plat_kend: 'AB 567 HH',
           tgl_per_sc: '2020-11-18',
-          nama_peminta: 'Encang',
-          ket_per_sc: 'Permintaan Kampas Rem',
+          nama_user: 'Encang',
+          status_per_sc: 'Disetujui',
         },
         {
           nama_sc: 'Kampas Rem',
           jml_per_sc: 134,
           plat_kend: 'AB 567 HH',
           tgl_per_sc: '2020-11-18',
-          nama_peminta: 'Encang',
-          ket_per_sc: 'Permintaan Kampas Rem',
+          nama_user: 'Encang',
+          status_per_sc: 'Ditolak',
         },
         {
           nama_sc: 'Kampas Rem',
           jml_per_sc: 134,
           plat_kend: 'AB 567 HH',
           tgl_per_sc: '2020-11-18',
-          nama_peminta: 'Encang',
-          ket_per_sc: 'Permintaan Kampas Rem',
+          nama_user: 'Encang',
+          status_per_sc: 'Disetujui',
         },
       ]
     },
@@ -341,7 +366,11 @@ export default {
       this.dialogDetail = false
     },
 
-    tolak() {},
+    tolak() {
+      this.detailValue.status_per_sc = 'Ditolak'
+      Object.assign(this.permintaan[this.DetailItem], this.detailValue)
+      this.close()
+    },
     setuju() {},
 
     save() {

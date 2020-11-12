@@ -62,7 +62,7 @@
     <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
       <v-list>
         <v-list-item @click.native="right = !right">
-          <v-list-item-action>
+          <v-list-item-action light>
             <v-icon light> mdi-repeat </v-icon>
           </v-list-item-action>
           <v-list-item-title>Switch drawer (click me)</v-list-item-title>
@@ -84,19 +84,18 @@ export default {
       fixed: false,
       items: [
         {
-          action: 'mdi-silverware-fork-knife',
+          action: 'mdi-view-dashboard',
           active: false,
           items: [
             { title: 'Suku Cadang', to: '/sukucadang' },
             { title: 'Suku Cadang Masuk', to: '/datamasuk' },
             { title: 'Suku Cadang Keluar', to: '/datakeluar' },
             { title: 'Kendaraan', to: '/datakendaraan' },
-            { title: 'Peminta', to: '/datapeminta' },
           ],
           title: 'MASTER',
         },
         {
-          action: 'mdi-silverware-fork-knife',
+          action: 'mdi-clipboard-check-outline',
           active: false,
           items: [
             { title: 'Permintaan', to: '/permintaan' },
@@ -105,13 +104,13 @@ export default {
           title: 'PERMINTAAN',
         },
         {
-          action: 'mdi-silverware-fork-knife',
+          action: 'mdi-card-text-outline',
           active: false,
           items: [{ title: 'Laporan Masuk-Keluar', to: '/laporansudang' }],
           title: 'LAPORAN',
         },
         {
-          action: 'mdi-silverware-fork-knife',
+          action: 'mdi-account-settings-outline',
           active: false,
           items: [{ title: 'Keluar', to: '/laporansudang' }],
           title: 'PENGATURAN',

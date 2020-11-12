@@ -1,16 +1,16 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="listPeminta"
-    sort-by="id_peminta"
+    :items="listUser"
+    sort-by="id_user"
     class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>DATA PEMINTA SUKU CADANG</v-toolbar-title>
+        <v-toolbar-title>DATA USER SUKU CADANG</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="800px">
           <template v-slot:activator="{ on, attrs }">
             <div>
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
@@ -31,8 +31,14 @@
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.nama_peminta"
-                      label="Nama Peminta"
+                      v-model="editedItem.nama_user"
+                      label="Nama User"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="editedItem.tipe_user"
+                      label="Nama User"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -72,7 +78,7 @@
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
-    <template v-slot:[`item.id_peminta`]="{ item }">
+    <template v-slot:[`item.id_user`]="{ item }">
       <v-chip> {{ item.nomor }}</v-chip>
     </template>
   </v-data-table>
@@ -83,31 +89,35 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      { text: 'No', align: 'start', sortable: false, value: 'id_peminta' },
-      { text: 'Nama Peminta', value: 'nama_peminta' },
+      { text: 'No', align: 'start', sortable: false, value: 'id_user' },
+      { text: 'Nama User', value: 'nama_user' },
+      { text: 'Tipe User', value: 'tipe_user' },
+      { text: 'Username', value: 'username' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
-    datapeminta: [],
+    datauser: [],
     editedIndex: -1,
     editedItem: {
-      id_peminta: 0,
-      nama_peminta: '',
+      id_user: 0,
+      nama_user: '',
+      tipe_user: '',
+      username: '',
     },
     defaultItem: {
-      id_peminta: 0,
-      nama_peminta: '',
+      id_user: 0,
+      nama_user: '',
+      tipe_user: '',
+      username: '',
     },
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1
-        ? 'Tambah Data Peminta'
-        : 'Edit Data Peminta'
+      return this.editedIndex === -1 ? 'Tambah Data User' : 'Edit Data User'
     },
-    listPeminta() {
+    listUser() {
       let i = 1
-      return this.datapeminta.map((v) => {
+      return this.datauser.map((v) => {
         v.nomor = i++
         return v
       })
@@ -129,39 +139,49 @@ export default {
 
   methods: {
     initialize() {
-      this.datapeminta = [
+      this.datauser = [
         {
-          nama_peminta: 'Chelsea',
+          nama_user: 'Chelsea',
+          tipe_user: 'Peminta',
+          username: 'chealse',
         },
         {
-          nama_peminta: 'Cristine',
+          nama_user: 'Chelsea',
+          tipe_user: 'Peminta',
+          username: 'chealse',
         },
         {
-          nama_peminta: 'Juliete',
+          nama_user: 'Chelsea',
+          tipe_user: 'Peminta',
+          username: 'chealse',
         },
         {
-          nama_peminta: 'Wenny',
+          nama_user: 'Chelsea',
+          tipe_user: 'Peminta',
+          username: 'chealse',
         },
         {
-          nama_peminta: 'krenny',
+          nama_user: 'Chelsea',
+          tipe_user: 'Peminta',
+          username: 'chealse',
         },
       ]
     },
 
     editItem(item) {
-      this.editedIndex = this.datapeminta.indexOf(item)
+      this.editedIndex = this.datauser.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem(item) {
-      this.editedIndex = this.datapeminta.indexOf(item)
+      this.editedIndex = this.datauser.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
     deleteItemConfirm() {
-      this.datapeminta.splice(this.editedIndex, 1)
+      this.datauser.splice(this.editedIndex, 1)
       this.closeDelete()
     },
 
@@ -183,9 +203,9 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.datapeminta[this.editedIndex], this.editedItem)
+        Object.assign(this.datauser[this.editedIndex], this.editedItem)
       } else {
-        this.datapeminta.push(this.editedItem)
+        this.datauser.push(this.editedItem)
       }
       this.close()
     },

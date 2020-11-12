@@ -111,13 +111,13 @@ export default {
     editedItem: {
       id_sc: 0,
       nama_sc: '',
-      stok_sc: 0,
+      stok_sc: null,
       satuan_sc: '',
     },
     defaultItem: {
       id_sc: 0,
       nama_sc: '',
-      stok_sc: 0,
+      stok_sc: null,
       satuan_sc: '',
     },
   }),
