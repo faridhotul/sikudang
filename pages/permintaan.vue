@@ -110,12 +110,6 @@
                         :rules="[(v) => !!v || 'Nama User tidak boleh kosong']"
                       ></v-select>
                     </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.ket_per_sc"
-                        label="Keterangan"
-                      ></v-text-field>
-                    </v-col>
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -238,6 +232,7 @@ export default {
       plat_kend: '',
       tgl_per_sc: '',
       nama_user: '',
+      status_per_sc: '',
       ket_per_sc: '',
     },
     defaultItem: {
@@ -247,6 +242,7 @@ export default {
       plat_kend: '',
       tgl_per_sc: '',
       nama_user: '',
+      status_per_sc: '',
       ket_per_sc: '',
     },
   }),
@@ -368,16 +364,19 @@ export default {
 
     tolak() {
       this.detailValue.status_per_sc = 'Ditolak'
-      Object.assign(this.permintaan[this.DetailItem], this.detailValue)
       this.close()
     },
-    setuju() {},
+    setuju() {
+      this.detailValue.status_per_sc = 'Disetujui'
+      this.close()
+    },
 
     save() {
       if (this.$refs.form.validate()) {
         if (this.editedIndex > -1) {
           Object.assign(this.permintaan[this.editedIndex], this.editedItem)
         } else {
+          this.editedItem.status_per_sc = 'Diajukan'
           this.permintaan.push(this.editedItem)
         }
         this.close()
