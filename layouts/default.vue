@@ -87,10 +87,10 @@ export default {
           action: 'mdi-view-dashboard',
           active: false,
           items: [
-            { title: 'Suku Cadang', to: '/sukucadang' },
+            { title: 'Suku Cadang', to: '/suku_cadang' },
             { title: 'Suku Cadang Masuk', to: '/datamasuk' },
-            { title: 'Suku Cadang Keluar', to: '/datakeluar' },
-            { title: 'Kendaraan', to: '/datakendaraan' },
+            { title: 'Suku Cadang Keluar', to: '/sc_keluar' },
+            { title: 'Kendaraan', to: '/kendaraan' },
           ],
           title: 'MASTER',
         },

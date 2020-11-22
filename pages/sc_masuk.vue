@@ -143,7 +143,7 @@ export default {
       'Suku Cadang  3',
       'Suku Cadang  4',
     ],
-    datamasuk: [],
+    sc_masuk: [],
     editedIndex: -1,
     editedItem: {
       id_msk: 0,
@@ -165,7 +165,7 @@ export default {
     },
     listMasuk() {
       let i = 1
-      return this.datamasuk.map((v) => {
+      return this.sc_masuk.map((v) => {
         v.nomor = i++
         return v
       })
@@ -180,6 +180,10 @@ export default {
       val || this.closeDelete()
     },
   },
+  async mounted() {
+    const apiscmasuk = await this.$axios.get('/api/sc_masuk')
+    this.sc_masuk = apiscmasuk.data.values
+  },
 
   created() {
     this.initialize()
@@ -187,7 +191,7 @@ export default {
 
   methods: {
     initialize() {
-      this.datamasuk = [
+      this.sc_masuk = [
         {
           nama_sc: 'Oli',
           jml_sc_msk: 120,
@@ -222,24 +226,29 @@ export default {
           nama_sc: 'Oli',
           jml_sc_msk: 120,
           tgl_sc_msk: '2020-11-18',
+        },
+        {
+          nama_sc: '',
+          jml_sc_msk: null,
+          tgl_sc_msk: '',
         },
       ]
     },
 
     editItem(item) {
-      this.editedIndex = this.datamasuk.indexOf(item)
+      this.editedIndex = this.sc_masuk.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem(item) {
-      this.editedIndex = this.datamasuk.indexOf(item)
+      this.editedIndex = this.sc_masuk.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
     deleteItemConfirm() {
-      this.datamasuk.splice(this.editedIndex, 1)
+      this.sc_masuk.splice(this.editedIndex, 1)
       this.closeDelete()
     },
 
@@ -261,9 +270,9 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.datamasuk[this.editedIndex], this.editedItem)
+        Object.assign(this.sc_masuk[this.editedIndex], this.editedItem)
       } else {
-        this.datamasuk.push(this.editedItem)
+        this.sc_masuk.push(this.editedItem)
       }
       this.close()
     },

@@ -87,7 +87,7 @@ export default {
       { text: 'Nomor Kendaraan', value: 'plat_kend' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
-    datkend: [],
+    kendaraan: [],
     editedIndex: -1,
     editedItem: {
       id_kend: 0,
@@ -107,7 +107,7 @@ export default {
     },
     listKendaraan() {
       let i = 1
-      return this.datkend.map((v) => {
+      return this.kendaraan.map((v) => {
         v.nomor = i++
         return v
       })
@@ -122,52 +122,37 @@ export default {
       val || this.closeDelete()
     },
   },
-
+  async mounted() {
+    const apikendaraan = await this.$axios.get('/api/kendaraan')
+    this.kendaraan = apikendaraan.data.values
+  },
   created() {
     this.initialize()
   },
 
   methods: {
     initialize() {
-      this.datkend = [
+      this.kendaraan = [
         {
-          plat_kend: 'AB 12345 XY',
-        },
-        {
-          plat_kend: 'AB 345 VK',
-        },
-        {
-          plat_kend: 'AB 5678 EE',
-        },
-        {
-          plat_kend: 'AB 1234 LL',
-        },
-        {
-          plat_kend: 'AB 0987 HH',
-        },
-        {
-          plat_kend: 'AB 0989 OO',
-        },
-        {
-          plat_kend: 'AB 8090 HH',
+          plat_kend: '',
         },
       ]
     },
 
     editItem(item) {
-      this.editedIndex = this.datkend.indexOf(item)
+      this.editedIndex = this.kendaraan.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem(item) {
-      this.editedIndex = this.datkend.indexOf(item)
+      this.editedIndex = this.kendaraan.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
     deleteItemConfirm() {
-      this.datkend.splice(this.editedIndex, 1)
+      this.kendaraan.splice(this.editedIndex, 1)
       this.closeDelete()
     },
 
@@ -189,9 +174,9 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.datkend[this.editedIndex], this.editedItem)
+        Object.assign(this.kendaraan[this.editedIndex], this.editedItem)
       } else {
-        this.datkend.push(this.editedItem)
+        this.kendaraan.push(this.editedItem)
       }
       this.close()
     },
