@@ -1,13 +1,13 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="listRiwayat"
+    :items="listLaporan"
     sort-by="id_riw"
     class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>RIWAYAT PERMINTAAN SUKU CADANG</v-toolbar-title>
+        <v-toolbar-title>LAPORAN SUKU CADANG</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
@@ -34,7 +34,7 @@
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
-    <template v-slot:[`item.id_riw`]="{ item }">
+    <template v-slot:[`item.id_lap`]="{ item }">
       <v-chip> {{ item.nomor }}</v-chip>
     </template>
   </v-data-table>
@@ -45,32 +45,28 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      { text: 'No', align: 'start', sortable: false, value: 'id_riw' },
+      { text: 'No', align: 'start', sortable: false, value: 'id_lap' },
       { text: 'Nama Suku Cadang', value: 'nama_sc' },
-      { text: 'Jumlah Permintaan', value: 'jml_per_sc' },
-      { text: 'Nomor Kendaraan', value: 'plat_kend' },
-      { text: 'Tanggal Permintaan', value: 'tgl_per_sc' },
-      { text: 'Nama Peminta', value: 'nama_peminta' },
-      { text: 'Status', value: 'status_per_sc' },
+      { text: 'Jumlah Keluar', value: 'jml_sc_kel' },
+      { text: 'Jumlah Masuk', value: 'jml_sc_msk' },
+      { text: 'Stok Akhir', value: 'stock_akhir' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
-    riwayat: [],
+    lap_kel_msk: [],
     editedIndex: -1,
     editedItem: {
-      id_riw: 0,
+      id_lap: 0,
       nama_sc: '',
-      plat_kend: '',
-      tgl_per_sc: Date,
-      nama_peminta: '',
-      status_per_sc: '',
+      jml_sc_kel: null,
+      jml_sc_msk: null,
+      stock_akhir: null,
     },
     defaultItem: {
-      id_riw: 0,
+      id_lap: 0,
       nama_sc: '',
-      plat_kend: '',
-      tgl_per_sc: Date,
-      nama_peminta: '',
-      status_per_sc: '',
+      jml_sc_kel: null,
+      jml_sc_msk: null,
+      stock_akhir: null,
     },
   }),
 
@@ -78,9 +74,9 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     },
-    listRiwayat() {
+    listLaporan() {
       let i = 1
-      return this.riwayat.map((v) => {
+      return this.lap_kel_msk.map((v) => {
         v.nomor = i++
         return v
       })
@@ -95,73 +91,40 @@ export default {
       val || this.closeDelete()
     },
   },
-
+  async mounted() {
+    const apilapkelmsk = await this.$axios.get('/api/lap_kel_msk')
+    this.lap_kel_msk = apilapkelmsk.data.values
+  },
   created() {
     this.initialize()
   },
 
   methods: {
     initialize() {
-      this.riwayat = [
+      this.lap_kel_msk = [
         {
-          nama_sc: 'Kampas Kopling',
-          plat_kend: 'AB 12345 HH',
-          tgl_per_sc: '',
-          nama_peminta: 'Albany',
-          status_per_sc: 'Diterima',
-        },
-        {
-          nama_sc: 'Kampas Kopling',
-          plat_kend: 'AB 12345 HH',
-          tgl_per_sc: '',
-          nama_peminta: 'Albany',
-          status_per_sc: 'Diterima',
-        },
-        {
-          nama_sc: 'Kampas Kopling',
-          plat_kend: 'AB 12345 HH',
-          tgl_per_sc: '',
-          nama_peminta: 'Albany',
-          status_per_sc: 'Diterima',
-        },
-        {
-          nama_sc: 'Kampas Kopling',
-          plat_kend: 'AB 12345 HH',
-          tgl_per_sc: '',
-          nama_peminta: 'Albany',
-          status_per_sc: 'Diterima',
-        },
-        {
-          nama_sc: 'Kampas Kopling',
-          plat_kend: 'AB 12345 HH',
-          tgl_per_sc: '',
-          nama_peminta: 'Albany',
-          status_per_sc: 'Diterima',
-        },
-        {
-          nama_sc: 'Kampas Kopling',
-          plat_kend: 'AB 12345 HH',
-          tgl_per_sc: '',
-          nama_peminta: 'Albany',
-          status_per_sc: 'Diterima',
+          nama_sc: '',
+          jml_sc_kel: null,
+          jml_sc_msk: null,
+          stock_akhir: null,
         },
       ]
     },
 
     editItem(item) {
-      this.editedIndex = this.riwayat.indexOf(item)
+      this.editedIndex = this.lap_kel_msk.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem(item) {
-      this.editedIndex = this.riwayat.indexOf(item)
+      this.editedIndex = this.lap_kel_msk.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
     deleteItemConfirm() {
-      this.riwayat.splice(this.editedIndex, 1)
+      this.lap_kel_msk.splice(this.editedIndex, 1)
       this.closeDelete()
     },
 
@@ -183,9 +146,9 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.riwayat[this.editedIndex], this.editedItem)
+        Object.assign(this.lap_kel_msk[this.editedIndex], this.editedItem)
       } else {
-        this.riwayat.push(this.editedItem)
+        this.lap_kel_msk.push(this.editedItem)
       }
       this.close()
     },

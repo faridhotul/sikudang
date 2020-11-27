@@ -1,13 +1,13 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="listLaporan"
+    :items="listRiwayat"
     sort-by="id_riw"
     class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>LAPORAN SUKU CADANG</v-toolbar-title>
+        <v-toolbar-title>RIWAYAT PERMINTAAN SUKU CADANG</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
@@ -34,7 +34,7 @@
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
-    <template v-slot:[`item.id_lap`]="{ item }">
+    <template v-slot:[`item.id_riw`]="{ item }">
       <v-chip> {{ item.nomor }}</v-chip>
     </template>
   </v-data-table>
@@ -45,28 +45,32 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      { text: 'No', align: 'start', sortable: false, value: 'id_lap' },
+      { text: 'No', align: 'start', sortable: false, value: 'id_riw' },
       { text: 'Nama Suku Cadang', value: 'nama_sc' },
-      { text: 'Jumlah Keluar', value: 'jml_sc_kel' },
-      { text: 'Jumlah Masuk', value: 'jml_sc_msk' },
-      { text: 'Stok Akhir', value: 'stock_akhir' },
+      { text: 'Jumlah Permintaan', value: 'jml_per_sc' },
+      { text: 'Nomor Kendaraan', value: 'plat_kend' },
+      { text: 'Tanggal Permintaan', value: 'tgl_per_sc' },
+      { text: 'Nama Peminta', value: 'nama_user' },
+      { text: 'Status', value: 'status_per_sc' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
-    laporan: [],
+    riwayat_permintaan: [],
     editedIndex: -1,
     editedItem: {
-      id_lap: 0,
+      id_riw: 0,
       nama_sc: '',
-      jml_sc_kel: null,
-      jml_sc_msk: null,
-      stock_akhir: null,
+      plat_kend: '',
+      tgl_per_sc: Date,
+      nama_user: '',
+      status_per_sc: '',
     },
     defaultItem: {
-      id_lap: 0,
+      id_riw: 0,
       nama_sc: '',
-      jml_sc_kel: null,
-      jml_sc_msk: null,
-      stock_akhir: null,
+      plat_kend: '',
+      tgl_per_sc: Date,
+      nama_user: '',
+      status_per_sc: '',
     },
   }),
 
@@ -74,9 +78,9 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     },
-    listLaporan() {
+    listRiwayat() {
       let i = 1
-      return this.laporan.map((v) => {
+      return this.riwayat_permintaan.map((v) => {
         v.nomor = i++
         return v
       })
@@ -91,67 +95,43 @@ export default {
       val || this.closeDelete()
     },
   },
-
+  async mounted() {
+    const apiriwayatpermintaan = await this.$axios.get(
+      '/api/riwayat_permintaan'
+    )
+    this.riwayat_permintaan = apiriwayatpermintaan.data.values
+  },
   created() {
     this.initialize()
   },
 
   methods: {
     initialize() {
-      this.laporan = [
+      this.riwayat_permintaan = [
         {
-          nama_sc: 'Kampas Kompling',
-          jml_sc_kel: 2,
-          jml_sc_msk: 0,
-          stock_akhir: 45,
-        },
-        {
-          nama_sc: 'Kampas Kompling',
-          jml_sc_kel: 2,
-          jml_sc_msk: 0,
-          stock_akhir: 45,
-        },
-        {
-          nama_sc: 'Kampas Kompling',
-          jml_sc_kel: 2,
-          jml_sc_msk: 0,
-          stock_akhir: 45,
-        },
-        {
-          nama_sc: 'Kampas Kompling',
-          jml_sc_kel: 2,
-          jml_sc_msk: 0,
-          stock_akhir: 45,
-        },
-        {
-          nama_sc: 'Kampas Kompling',
-          jml_sc_kel: 2,
-          jml_sc_msk: 0,
-          stock_akhir: 45,
-        },
-        {
-          nama_sc: 'Kampas Kompling',
-          jml_sc_kel: 2,
-          jml_sc_msk: 0,
-          stock_akhir: 45,
+          nama_sc: '',
+          plat_kend: '',
+          tgl_per_sc: '',
+          nama_user: '',
+          status_per_sc: '',
         },
       ]
     },
 
     editItem(item) {
-      this.editedIndex = this.laporan.indexOf(item)
+      this.editedIndex = this.riwayat_permintaan.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem(item) {
-      this.editedIndex = this.laporan.indexOf(item)
+      this.editedIndex = this.riwayat_permintaan.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
     deleteItemConfirm() {
-      this.laporan.splice(this.editedIndex, 1)
+      this.riwayat_permintaan.splice(this.editedIndex, 1)
       this.closeDelete()
     },
 
@@ -173,9 +153,12 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.laporan[this.editedIndex], this.editedItem)
+        Object.assign(
+          this.riwayat_permintaan[this.editedIndex],
+          this.editedItem
+        )
       } else {
-        this.laporan.push(this.editedItem)
+        this.riwayat_permintaan.push(this.editedItem)
       }
       this.close()
     },

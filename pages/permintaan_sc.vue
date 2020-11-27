@@ -34,7 +34,9 @@
                       <v-select
                         v-model="editedItem.nama_sc"
                         label="Nama Suku Cadang"
-                        :items="items"
+                        :items="suku_cadang"
+                        item-text="nama_sc"
+                        item-value="id_sc"
                         :rules="[
                           (v) => !!v || 'Nama Suku Cadang tidak boleh kosong',
                         ]"
@@ -217,13 +219,9 @@ export default {
       { text: 'Status', value: 'status_per_sc' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
-    items: [
-      'Suku Cadang 1',
-      'Suku Cadang  2',
-      'Suku Cadang  3',
-      'Suku Cadang  4',
-    ],
-    permintaan: [],
+    suku_cadang: [],
+    items: ['item1', 'item2', 'item3'],
+    permintaan_sc: [],
     editedIndex: -1,
     editedItem: {
       id_per_sc: 0,
@@ -253,7 +251,7 @@ export default {
     },
     listPermintaan() {
       let i = 1
-      return this.permintaan.map((v) => {
+      return this.permintaan_sc.map((v) => {
         v.nomor = i++
         return v
       })
@@ -271,6 +269,13 @@ export default {
       val || this.closeDetail()
     },
   },
+  async mounted() {
+    const apipermintaansc = await this.$axios.get('/api/permintaan_sc')
+    this.permintaan_sc = apipermintaansc.data.values
+
+    const apilistsc = await this.$axios.get('/api/suku_cadang')
+    this.suku_cadang = apilistsc.data.values
+  },
 
   created() {
     this.initialize()
@@ -278,48 +283,16 @@ export default {
 
   methods: {
     initialize() {
-      this.permintaan = [
+      this.permintaan_sc = [
         {
-          nama_sc: 'Kampas Rem',
-          jml_per_sc: 134,
-          plat_kend: 'AB 567 HH',
-          tgl_per_sc: '2020-11-18',
-          nama_user: 'Encang',
-          status_per_sc: 'Diajukan',
-        },
-        {
-          nama_sc: 'Kampas Rem',
-          jml_per_sc: 134,
-          plat_kend: 'AB 567 HH',
-          tgl_per_sc: '2020-11-18',
-          nama_user: 'Encang',
-          status_per_sc: 'Ditolak',
-        },
-        {
-          nama_sc: 'Kampas Rem',
-          jml_per_sc: 134,
-          plat_kend: 'AB 567 HH',
-          tgl_per_sc: '2020-11-18',
-          nama_user: 'Encang',
-          status_per_sc: 'Disetujui',
-        },
-        {
-          nama_sc: 'Kampas Rem',
-          jml_per_sc: 134,
-          plat_kend: 'AB 567 HH',
-          tgl_per_sc: '2020-11-18',
-          nama_user: 'Encang',
-          status_per_sc: 'Ditolak',
-        },
-        {
-          nama_sc: 'Kampas Rem',
-          jml_per_sc: 134,
-          plat_kend: 'AB 567 HH',
-          tgl_per_sc: '2020-11-18',
-          nama_user: 'Encang',
-          status_per_sc: 'Disetujui',
+          jml_per_sc: null,
+          plat_kend: '',
+          tgl_per_sc: '',
+          nama_user: '',
+          status_per_sc: '',
         },
       ]
+      this.suku_cadang = [{ nama_sc: '' }]
     },
     DetailItem(item) {
       this.detailValue = item
@@ -327,19 +300,19 @@ export default {
     },
 
     editItem(item) {
-      this.editedIndex = this.permintaan.indexOf(item)
+      this.editedIndex = this.permintaan_sc.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem(item) {
-      this.editedIndex = this.permintaan.indexOf(item)
+      this.editedIndex = this.permintaan_sc.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
     deleteItemConfirm() {
-      this.permintaan.splice(this.editedIndex, 1)
+      this.permintaan_sc.splice(this.editedIndex, 1)
       this.closeDelete()
     },
 
@@ -374,10 +347,10 @@ export default {
     save() {
       if (this.$refs.form.validate()) {
         if (this.editedIndex > -1) {
-          Object.assign(this.permintaan[this.editedIndex], this.editedItem)
+          Object.assign(this.permintaan_sc[this.editedIndex], this.editedItem)
         } else {
           this.editedItem.status_per_sc = 'Diajukan'
-          this.permintaan.push(this.editedItem)
+          this.permintaan_sc.push(this.editedItem)
         }
         this.close()
       }
