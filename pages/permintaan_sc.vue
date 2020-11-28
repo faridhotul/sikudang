@@ -32,7 +32,7 @@
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
                       <v-select
-                        v-model="editedItem.nama_sc"
+                        v-model="editedItem.id_sc"
                         label="Nama Suku Cadang"
                         :items="suku_cadang"
                         item-text="nama_sc"
@@ -224,6 +224,7 @@ export default {
     permintaan_sc: [],
     editedIndex: -1,
     editedItem: {
+      id_sc: null,
       id_per_sc: 0,
       nama_sc: '',
       jml_per_sc: null,
@@ -234,6 +235,7 @@ export default {
       ket_per_sc: '',
     },
     defaultItem: {
+      id_sc: null,
       id_per_sc: 0,
       nama_sc: '',
       jml_per_sc: null,
@@ -269,12 +271,10 @@ export default {
       val || this.closeDetail()
     },
   },
-  async mounted() {
-    const apipermintaansc = await this.$axios.get('/api/permintaan_sc')
-    this.permintaan_sc = apipermintaansc.data.values
 
-    const apilistsc = await this.$axios.get('/api/suku_cadang')
-    this.suku_cadang = apilistsc.data.values
+  mounted() {
+    this.loadPermintaan()
+    this.loadSukuCadang()
   },
 
   created() {
@@ -282,6 +282,14 @@ export default {
   },
 
   methods: {
+    async loadPermintaan() {
+      const apipermintaansc = await this.$axios.get('/api/permintaan_sc')
+      this.permintaan_sc = apipermintaansc.data.values
+    },
+    async loadSukuCadang() {
+      const apilistsc = await this.$axios.get('/api/suku_cadang')
+      this.suku_cadang = apilistsc.data.values
+    },
     initialize() {
       this.permintaan_sc = [
         {
@@ -352,6 +360,8 @@ export default {
           this.editedItem.status_per_sc = 'Diajukan'
           this.permintaan_sc.push(this.editedItem)
         }
+        // this.loadPermintaan()
+        this.$refs.form.resetValidation()
         this.close()
       }
     },
