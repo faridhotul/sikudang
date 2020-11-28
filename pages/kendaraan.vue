@@ -83,7 +83,7 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      { text: 'No', align: 'start', sortable: false, value: 'id_kend' },
+      { text: 'No', align: 'start', sortable: true, value: 'id_kend' },
       { text: 'Nomor Kendaraan', value: 'plat_kend' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
@@ -122,15 +122,18 @@ export default {
       val || this.closeDelete()
     },
   },
-  async mounted() {
-    const apikendaraan = await this.$axios.get('/api/kendaraan')
-    this.kendaraan = apikendaraan.data.values
-  },
   created() {
     this.initialize()
   },
+  mounted() {
+    this.loadKendaraan()
+  },
 
   methods: {
+    async loadKendaraan() {
+      const apikendaraan = await this.$axios.get('/api/kendaraan')
+      this.kendaraan = apikendaraan.data.values
+    },
     initialize() {
       this.kendaraan = [
         {
@@ -151,9 +154,16 @@ export default {
       this.dialogDelete = true
     },
 
-    deleteItemConfirm() {
-      this.kendaraan.splice(this.editedIndex, 1)
-      this.closeDelete()
+    async deleteItemConfirm() {
+      const apikendaraan = await this.$axios.post('/api/deletekendaraan', {
+        id_kend: this.editedItem.id_kend,
+      })
+      window.alert(apikendaraan.data.values)
+      if (apikendaraan.data.status === 200) {
+        this.loadKendaraan()
+        this.closeDelete()
+      }
+      // this.kendaraan.splice(this.editedIndex, 1)
     },
 
     close() {
@@ -172,13 +182,29 @@ export default {
       })
     },
 
-    save() {
+    async save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.kendaraan[this.editedIndex], this.editedItem)
+        // Object.assign(this.kendaraan[this.editedIndex], this.editedItem)
+        const apikendaraan = await this.$axios.post('/api/updatekendaraan', {
+          id_kend: this.editedItem.id_kend,
+          plat_kend: this.editedItem.plat_kend,
+        })
+        window.alert(apikendaraan.data.values)
+        if (apikendaraan.data.status === 200) {
+          this.loadKendaraan()
+          this.close()
+        }
       } else {
-        this.kendaraan.push(this.editedItem)
+        // this.kendaraan.push(this.editedItem)
+        const apikendaraan = await this.$axios.post('/api/createkendaraan', {
+          plat_kend: this.editedItem.plat_kend,
+        })
+        window.alert(apikendaraan.data.values)
+        if (apikendaraan.data.status === 200) {
+          this.loadKendaraan()
+          this.close()
+        }
       }
-      this.close()
     },
   },
 }
