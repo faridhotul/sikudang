@@ -197,12 +197,11 @@ export default {
       val || this.closeDelete()
     },
   },
-  async mounted() {
-    const apisckeluar = await this.$axios.get('/api/sc_keluar')
-    this.sc_keluar = apisckeluar.data.values
-  },
   created() {
     this.initialize()
+  },
+  mounted() {
+    this.loadsc_keluar()
   },
 
   methods: {
@@ -216,6 +215,10 @@ export default {
           nama_user: '',
         },
       ]
+    },
+    async loadsc_keluar() {
+      const apisckeluar = await this.$axios.get('/api/sc_keluar')
+      this.sc_keluar = apisckeluar.data.values
     },
 
     editItem(item) {

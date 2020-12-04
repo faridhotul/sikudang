@@ -133,9 +133,8 @@ export default {
       val || this.closeDelete()
     },
   },
-  async mounted() {
-    const apisukucadang = await this.$axios.get('/api/suku_cadang')
-    this.suku_cadang = apisukucadang.data.values
+  mounted() {
+    this.loadsukucadang()
   },
   created() {
     this.initialize()
@@ -150,6 +149,10 @@ export default {
         },
       ]
     },
+    async loadsukucadang() {
+      const apisukucadang = await this.$axios.get('/api/suku_cadang')
+      this.suku_cadang = apisukucadang.data.values
+    },
 
     editItem(item) {
       this.editedIndex = this.suku_cadang.indexOf(item)
@@ -163,9 +166,18 @@ export default {
       this.dialogDelete = true
     },
 
-    deleteItemConfirm() {
-      this.suku_cadang.splice(this.editedIndex, 1)
-      this.closeDelete()
+    async deleteItemConfirm() {
+      const apideletesukucadang = await this.$axios.post(
+        '/api/deletesukucadang',
+        {
+          id_sc: this.editedItem.id_sc,
+        }
+      )
+      window.alert(apideletesukucadang.data.values)
+      if (apideletesukucadang.data.status === 200) {
+        this.loadsukucadang()
+        this.closeDelete()
+      }
     },
 
     close() {
@@ -184,13 +196,36 @@ export default {
       })
     },
 
-    save() {
+    async save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.suku_cadang[this.editedIndex], this.editedItem)
+        const apiupdatesukucadang = await this.$axios.post(
+          '/api/updatesukucadang',
+          {
+            id_sc: this.editedItem.id_sc,
+            nama_sc: this.editedItem.nama_sc,
+            satuan_sc: this.editedItem.satuan_sc,
+          }
+        )
+        window.alert(apiupdatesukucadang.data.values)
+        if (apiupdatesukucadang.data.status === 200) {
+          this.loadsukucadang()
+          this.close()
+        }
       } else {
-        this.suku_cadang.push(this.editedItem)
+        // this.suku_cadang.push(this.editedItem)
+        const apicreatesukucadang = await this.$axios.post(
+          '/api/createsukucadang',
+          {
+            nama_sc: this.editedItem.nama_sc,
+            satuan_sc: this.editedItem.satuan_sc,
+          }
+        )
+        window.alert(apicreatesukucadang.data.values)
+        if (apicreatesukucadang.data.status === 200) {
+          this.loadsukucadang()
+          this.close()
+        }
       }
-      this.close()
     },
   },
 }

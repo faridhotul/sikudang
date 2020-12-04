@@ -155,11 +155,14 @@ export default {
     },
 
     async deleteItemConfirm() {
-      const apikendaraan = await this.$axios.post('/api/deletekendaraan', {
-        id_kend: this.editedItem.id_kend,
-      })
-      window.alert(apikendaraan.data.values)
-      if (apikendaraan.data.status === 200) {
+      const apideletekendaraan = await this.$axios.post(
+        '/api/deletekendaraan',
+        {
+          id_kend: this.editedItem.id_kend,
+        }
+      )
+      window.alert(apideletekendaraan.data.values)
+      if (apideletekendaraan.data.status === 200) {
         this.loadKendaraan()
         this.closeDelete()
       }
@@ -185,22 +188,28 @@ export default {
     async save() {
       if (this.editedIndex > -1) {
         // Object.assign(this.kendaraan[this.editedIndex], this.editedItem)
-        const apikendaraan = await this.$axios.post('/api/updatekendaraan', {
-          id_kend: this.editedItem.id_kend,
-          plat_kend: this.editedItem.plat_kend,
-        })
-        window.alert(apikendaraan.data.values)
-        if (apikendaraan.data.status === 200) {
+        const apiupdatekendaraan = await this.$axios.post(
+          '/api/updatekendaraan',
+          {
+            id_kend: this.editedItem.id_kend,
+            plat_kend: this.editedItem.plat_kend,
+          }
+        )
+        window.alert(apiupdatekendaraan.data.values)
+        if (apiupdatekendaraan.data.status === 200) {
           this.loadKendaraan()
           this.close()
         }
       } else {
         // this.kendaraan.push(this.editedItem)
-        const apikendaraan = await this.$axios.post('/api/createkendaraan', {
-          plat_kend: this.editedItem.plat_kend,
-        })
-        window.alert(apikendaraan.data.values)
-        if (apikendaraan.data.status === 200) {
+        const apicreatekendaraan = await this.$axios.post(
+          '/api/createkendaraan',
+          {
+            plat_kend: this.editedItem.plat_kend,
+          }
+        )
+        window.alert(apicreatekendaraan.data.values)
+        if (apicreatekendaraan.data.status === 200) {
           this.loadKendaraan()
           this.close()
         }
