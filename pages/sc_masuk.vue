@@ -31,9 +31,11 @@
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
                     <v-select
-                      v-model="editedItem.nama_sc"
+                      v-model="editedItem.id_sc"
                       label="Nama Suku Cadang"
-                      :items="items"
+                      :items="suku_cadang"
+                      item-text="nama_sc"
+                      item-value="id_sc"
                       required
                     ></v-select>
                   </v-col>
@@ -137,22 +139,19 @@ export default {
       { text: 'Tanggal Masuk', value: 'tgl_sc_msk' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
-    items: [
-      'Suku Cadang 1',
-      'Suku Cadang  2',
-      'Suku Cadang  3',
-      'Suku Cadang  4',
-    ],
+    suku_cadang: [],
     sc_masuk: [],
     editedIndex: -1,
     editedItem: {
       id_msk: 0,
+      id_sc: null,
       nama_sc: '',
       jml_sc_msk: null,
       tgl_sc_msk: '',
     },
     defaultItem: {
       id_msk: 0,
+      id_sc: null,
       nama_sc: '',
       jml_sc_msk: null,
       tgl_sc_msk: '',
@@ -180,9 +179,9 @@ export default {
       val || this.closeDelete()
     },
   },
-  async mounted() {
-    const apiscmasuk = await this.$axios.get('/api/sc_masuk')
-    this.sc_masuk = apiscmasuk.data.values
+  mounted() {
+    this.loadscmasuk()
+    this.loadSukuCadang()
   },
 
   created() {
@@ -190,49 +189,22 @@ export default {
   },
 
   methods: {
+    async loadscmasuk() {
+      const apiscmasuk = await this.$axios.get('/api/sc_masuk')
+      this.sc_masuk = apiscmasuk.data.values
+    },
+    async loadSukuCadang() {
+      const apilistsc = await this.$axios.get('/api/suku_cadang')
+      this.suku_cadang = apilistsc.data.values
+    },
     initialize() {
       this.sc_masuk = [
         {
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: '2020-11-18',
-        },
-        {
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: '2020-11-18',
-        },
-        {
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: '2020-11-18',
-        },
-        {
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: '2020-11-18',
-        },
-        {
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: '2020-11-18',
-        },
-        {
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: '2020-11-18',
-        },
-        {
-          nama_sc: 'Oli',
-          jml_sc_msk: 120,
-          tgl_sc_msk: '2020-11-18',
-        },
-        {
-          nama_sc: '',
-          jml_sc_msk: null,
+          jml_sc_msk: '',
           tgl_sc_msk: '',
         },
       ]
+      this.suku_cadang = [{ nama_sc: '' }]
     },
 
     editItem(item) {
@@ -247,9 +219,15 @@ export default {
       this.dialogDelete = true
     },
 
-    deleteItemConfirm() {
-      this.sc_masuk.splice(this.editedIndex, 1)
-      this.closeDelete()
+    async deleteItemConfirm() {
+      const apideletescmsk = await this.$axios.post('/api/deletesc_masuk', {
+        id_msk: this.editedItem.id_msk,
+      })
+      window.alert(apideletescmsk.data.values)
+      if (apideletescmsk.data.status === 200) {
+        this.loadscmasuk()
+        this.closeDelete()
+      }
     },
 
     close() {
@@ -268,13 +246,33 @@ export default {
       })
     },
 
-    save() {
+    async save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.sc_masuk[this.editedIndex], this.editedItem)
+        const apiupdatescmsk = await this.$axios.post('/api/updatesc_masuk', {
+          id_msk: this.editedItem.id_msk,
+          jml_sc_msk: this.editedItem.jml_sc_msk,
+          tgl_sc_msk: this.editedItem.tgl_sc_msk,
+          id_sc: this.editedItem.id_sc,
+        })
+        window.alert(apiupdatescmsk.data.values)
+        if (apiupdatescmsk.data.status === 200) {
+          this.loadscmasuk()
+          this.close()
+        }
       } else {
-        this.sc_masuk.push(this.editedItem)
+        // this.suku_cadang.push(this.editedItem)
+        const apicreatescmsk = await this.$axios.post('/api/createsc_masuk', {
+          jml_sc_msk: this.editedItem.jml_sc_msk,
+          tgl_sc_msk: this.editedItem.tgl_sc_msk,
+          id_sc: this.editedItem.id_sc,
+        })
+        window.alert(apicreatescmsk.data.values)
+        if (apicreatescmsk.data.status === 200) {
+          this.loadscmasuk()
+          // this.$refs.form.resetValidation()
+          this.close()
+        }
       }
-      this.close()
     },
   },
 }

@@ -26,11 +26,6 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:[`item.actions`]="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-      <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
-      <v-icon>fas fa-list</v-icon>
-    </template>
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
@@ -52,7 +47,6 @@ export default {
       { text: 'Tanggal Permintaan', value: 'tgl_per_sc' },
       { text: 'Nama Peminta', value: 'nama_user' },
       { text: 'Status', value: 'status_per_sc' },
-      { text: 'Aksi', value: 'actions', sortable: false },
     ],
     riwayat_permintaan: [],
     editedIndex: -1,
@@ -95,17 +89,21 @@ export default {
       val || this.closeDelete()
     },
   },
-  async mounted() {
-    const apiriwayatpermintaan = await this.$axios.get(
-      '/api/riwayat_permintaan'
-    )
-    this.riwayat_permintaan = apiriwayatpermintaan.data.values
+  mounted() {
+    this.loadriwayat()
   },
+
   created() {
     this.initialize()
   },
 
   methods: {
+    async loadriwayat() {
+      const apiriwayatpermintaan = await this.$axios.get(
+        '/api/riwayat_permintaan'
+      )
+      this.riwayat_permintaan = apiriwayatpermintaan.data.values
+    },
     initialize() {
       this.riwayat_permintaan = [
         {
@@ -149,18 +147,6 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
-    },
-
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(
-          this.riwayat_permintaan[this.editedIndex],
-          this.editedItem
-        )
-      } else {
-        this.riwayat_permintaan.push(this.editedItem)
-      }
-      this.close()
     },
   },
 }

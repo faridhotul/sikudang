@@ -55,9 +55,11 @@
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-select
-                        v-model="editedItem.plat_kend"
+                        v-model="editedItem.id_kend"
                         label="Nomor Kendaraan"
-                        :items="items"
+                        :items="nomor_kend"
+                        item-text="plat_kend"
+                        item-value="id_kend"
                         required
                         :rules="[
                           (v) => !!v || 'Nomor Kendaraan tidak boleh kosong',
@@ -105,9 +107,11 @@
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-select
-                        v-model="editedItem.nama_user"
+                        v-model="editedItem.id_user"
                         label="Nama User"
-                        :items="items"
+                        :items="peminta"
+                        item-text="nama_user"
+                        item-value="id_user"
                         required
                         :rules="[(v) => !!v || 'Nama User tidak boleh kosong']"
                       ></v-select>
@@ -220,30 +224,33 @@ export default {
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
     suku_cadang: [],
-    items: ['item1', 'item2', 'item3'],
+    nomor_kend: [],
+    peminta: [],
     permintaan_sc: [],
     editedIndex: -1,
     editedItem: {
-      id_sc: null,
       id_per_sc: 0,
+      id_sc: null,
       nama_sc: '',
       jml_per_sc: null,
+      id_kend: null,
       plat_kend: '',
       tgl_per_sc: '',
+      id_user: null,
       nama_user: '',
       status_per_sc: '',
-      ket_per_sc: '',
     },
     defaultItem: {
-      id_sc: null,
       id_per_sc: 0,
+      id_sc: null,
       nama_sc: '',
       jml_per_sc: null,
+      id_kend: null,
       plat_kend: '',
       tgl_per_sc: '',
+      id_user: null,
       nama_user: '',
       status_per_sc: '',
-      ket_per_sc: '',
     },
   }),
 
@@ -275,6 +282,8 @@ export default {
   mounted() {
     this.loadPermintaan()
     this.loadSukuCadang()
+    this.loadnomorkend()
+    this.loadpeminta()
   },
 
   created() {
@@ -290,17 +299,26 @@ export default {
       const apilistsc = await this.$axios.get('/api/suku_cadang')
       this.suku_cadang = apilistsc.data.values
     },
+    async loadnomorkend() {
+      const apilistnokend = await this.$axios.get('/api/kendaraan')
+      this.nomor_kend = apilistnokend.data.values
+    },
+    async loadpeminta() {
+      const apilistpeminta = await this.$axios.get('/api/users')
+      this.peminta = apilistpeminta.data.values
+    },
+
     initialize() {
       this.permintaan_sc = [
         {
           jml_per_sc: null,
-          plat_kend: '',
           tgl_per_sc: '',
-          nama_user: '',
           status_per_sc: '',
         },
       ]
       this.suku_cadang = [{ nama_sc: '' }]
+      this.nomor_kend = [{ plat_kend: '' }]
+      this.permintaan = [{ nama_user: '' }]
     },
     DetailItem(item) {
       this.detailValue = item
@@ -319,9 +337,18 @@ export default {
       this.dialogDelete = true
     },
 
-    deleteItemConfirm() {
-      this.permintaan_sc.splice(this.editedIndex, 1)
-      this.closeDelete()
+    async deleteItemConfirm() {
+      const apideletepermintaan = await this.$axios.post(
+        '/api/deletepermintaan_sc',
+        {
+          id_per_sc: this.editedItem.id_per_sc,
+        }
+      )
+      window.alert(apideletepermintaan.data.values)
+      if (apideletepermintaan.data.status === 200) {
+        this.loadPermintaan()
+        this.closeDelete()
+      }
     },
 
     close() {
@@ -343,26 +370,73 @@ export default {
       this.dialogDetail = false
     },
 
-    tolak() {
-      this.detailValue.status_per_sc = 'Ditolak'
-      this.close()
+    async tolak() {
+      const apiupdatetolak = await this.$axios.post(
+        '/api/updatestatuspermintaan',
+        {
+          id_per_sc: this.detailValue.id_per_sc,
+          status_per_sc: 'Ditolak',
+        }
+      )
+      window.alert(apiupdatetolak.data.values)
+      if (apiupdatetolak.data.status === 200) {
+        this.loadPermintaan()
+        this.closeDetail()
+      }
     },
-    setuju() {
-      this.detailValue.status_per_sc = 'Disetujui'
-      this.close()
+    async setuju() {
+      const apiupdatesetuju = await this.$axios.post(
+        '/api/updatestatuspermintaan',
+        {
+          id_per_sc: this.detailValue.id_per_sc,
+          status_per_sc: 'Disetujui',
+        }
+      )
+      window.alert(apiupdatesetuju.data.values)
+      if (apiupdatesetuju.data.status === 200) {
+        this.loadPermintaan()
+        this.closeDetail()
+      }
     },
 
-    save() {
-      if (this.$refs.form.validate()) {
-        if (this.editedIndex > -1) {
-          Object.assign(this.permintaan_sc[this.editedIndex], this.editedItem)
-        } else {
-          this.editedItem.status_per_sc = 'Diajukan'
-          this.permintaan_sc.push(this.editedItem)
+    async save() {
+      if (this.editedIndex > -1) {
+        const apiupdatepermintaan = await this.$axios.post(
+          '/api/updatepermintaan_sc',
+          {
+            id_per_sc: this.editedItem.id_per_sc,
+            id_sc: this.editedItem.id_sc,
+            jml_per_sc: this.editedItem.jml_per_sc,
+            id_kend: this.editedItem.id_kend,
+            id_user: this.editedItem.id_user,
+            tgl_per_sc: this.editedItem.tgl_per_sc,
+          }
+        )
+        window.alert(apiupdatepermintaan.data.values)
+        if (apiupdatepermintaan.data.status === 200) {
+          this.loadPermintaan()
+          this.close()
         }
-        // this.loadPermintaan()
-        this.$refs.form.resetValidation()
-        this.close()
+      } else {
+        // this.suku_cadang.push(this.editedItem)
+        const apicreatepermintaan = await this.$axios.post(
+          '/api/createpermintaan_sc',
+          {
+            id_sc: this.editedItem.id_sc,
+            jml_per_sc: this.editedItem.jml_per_sc,
+            id_kend: this.editedItem.id_kend,
+            id_user: this.editedItem.id_user,
+            nama_sc: this.editedItem.nama_sc,
+            tgl_per_sc: this.editedItem.tgl_per_sc,
+            status_per_sc: (this.editedItem.status_per_sc = 'Diajukan'),
+          }
+        )
+        window.alert(apicreatepermintaan.data.values)
+        if (apicreatepermintaan.data.status === 200) {
+          this.loadPermintaan()
+          this.$refs.form.resetValidation()
+          this.close()
+        }
       }
     },
   },

@@ -31,9 +31,11 @@
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
                     <v-select
-                      v-model="editedItem.nama_sc"
+                      v-model="editedItem.id_sc"
                       label="Nama Suku Cadang"
-                      :items="items"
+                      :items="suku_cadang"
+                      item-text="nama_sc"
+                      item-value="id_sc"
                       required
                     ></v-select>
                   </v-col>
@@ -84,17 +86,21 @@
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-select
-                      v-model="editedItem.plat_kend"
+                      v-model="editedItem.id_kend"
                       label="Nomor Kendaraan"
-                      :items="items"
+                      :items="nomor_kend"
+                      item-text="plat_kend"
+                      item-value="id_kend"
                       required
                     ></v-select>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-select
-                      v-model="editedItem.nama_user"
-                      label="Nama Peminta"
-                      :items="items"
+                      v-model="editedItem.id_user"
+                      label="Nama User"
+                      :items="peminta"
+                      item-text="nama_user"
+                      item-value="id_user"
                       required
                     ></v-select>
                   </v-col>
@@ -155,23 +161,31 @@ export default {
       { text: 'Nama Peminta', value: 'nama_user' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
-    items: ['Ban', 'Sil Kopling', 'Suku Cadang  3', 'Suku Cadang  4'],
+    suku_cadang: [],
+    nomor_kend: [],
+    peminta: [],
     sc_keluar: [],
     editedIndex: -1,
     editedItem: {
       id_kel: 0,
+      id_sc: null,
       nama_sc: '',
       jml_sc_kel: null,
       tgl_sc_kel: '',
+      id_kend: null,
       plat_kend: '',
+      id_user: null,
       nama_user: '',
     },
     defaultItem: {
       id_kel: 0,
+      id_sc: null,
       nama_sc: '',
       jml_sc_kel: null,
       tgl_sc_kel: '',
+      id_kend: null,
       plat_kend: '',
+      id_user: null,
       nama_user: '',
     },
   }),
@@ -201,7 +215,10 @@ export default {
     this.initialize()
   },
   mounted() {
-    this.loadsc_keluar()
+    this.loadsckeluar()
+    this.loadSukuCadang()
+    this.loadnomorkend()
+    this.loadpeminta()
   },
 
   methods: {
@@ -211,14 +228,27 @@ export default {
           nama_sc: '',
           jml_sc_kel: null,
           tgl_sc_kel: '',
-          plat_kend: '',
-          nama_user: '',
         },
       ]
+      this.suku_cadang = [{ nama_sc: '' }]
+      this.nomor_kend = [{ plat_kend: '' }]
+      this.permintaan = [{ nama_user: '' }]
     },
-    async loadsc_keluar() {
+    async loadsckeluar() {
       const apisckeluar = await this.$axios.get('/api/sc_keluar')
       this.sc_keluar = apisckeluar.data.values
+    },
+    async loadSukuCadang() {
+      const apilistsc = await this.$axios.get('/api/suku_cadang')
+      this.suku_cadang = apilistsc.data.values
+    },
+    async loadnomorkend() {
+      const apilistnokend = await this.$axios.get('/api/kendaraan')
+      this.nomor_kend = apilistnokend.data.values
+    },
+    async loadpeminta() {
+      const apilistpeminta = await this.$axios.get('/api/users')
+      this.peminta = apilistpeminta.data.values
     },
 
     editItem(item) {
@@ -233,9 +263,15 @@ export default {
       this.dialogDelete = true
     },
 
-    deleteItemConfirm() {
-      this.sc_keluar.splice(this.editedIndex, 1)
-      this.closeDelete()
+    async deleteItemConfirm() {
+      const apideletesckeluar = await this.$axios.post('/api/deletesc_keluar', {
+        id_kel: this.editedItem.id_kel,
+      })
+      window.alert(apideletesckeluar.data.values)
+      if (apideletesckeluar.data.status === 200) {
+        this.loadsckeluar()
+        this.closeDelete()
+      }
     },
 
     close() {
@@ -254,13 +290,42 @@ export default {
       })
     },
 
-    save() {
+    async save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.sc_keluar[this.editedIndex], this.editedItem)
+        const apiupdatesckeluar = await this.$axios.post(
+          '/api/updatesc_keluar',
+          {
+            id_kel: this.editedItem.id_kel,
+            id_sc: this.editedItem.id_sc,
+            jml_sc_kel: this.editedItem.jml_sc_kel,
+            tgl_sc_kel: this.editedItem.tgl_sc_kel,
+            id_kend: this.editedItem.id_kend,
+            id_user: this.editedItem.id_user,
+          }
+        )
+        window.alert(apiupdatesckeluar.data.values)
+        if (apiupdatesckeluar.data.status === 200) {
+          this.loadsckeluar()
+          this.close()
+        }
       } else {
-        this.sc_keluar.push(this.editedItem)
+        // this.suku_cadang.push(this.editedItem)
+        const apicreatesckeluar = await this.$axios.post(
+          '/api/createsc_keluar',
+          {
+            id_sc: this.editedItem.id_sc,
+            jml_sc_kel: this.editedItem.jml_sc_kel,
+            tgl_sc_kel: this.editedItem.tgl_sc_kel,
+            id_kend: this.editedItem.id_kend,
+            id_user: this.editedItem.id_user,
+          }
+        )
+        window.alert(apicreatesckeluar.data.values)
+        if (apicreatesckeluar.data.status === 200) {
+          this.loadsckeluar()
+          this.close()
+        }
       }
-      this.close()
     },
   },
 }

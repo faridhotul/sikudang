@@ -50,7 +50,6 @@ export default {
       { text: 'Jumlah Keluar', value: 'jml_sc_kel' },
       { text: 'Jumlah Masuk', value: 'jml_sc_msk' },
       { text: 'Stok Akhir', value: 'stock_akhir' },
-      { text: 'Aksi', value: 'actions', sortable: false },
     ],
     lap_kel_msk: [],
     editedIndex: -1,
@@ -142,15 +141,6 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
-    },
-
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.lap_kel_msk[this.editedIndex], this.editedItem)
-      } else {
-        this.lap_kel_msk.push(this.editedItem)
-      }
-      this.close()
     },
   },
 }
