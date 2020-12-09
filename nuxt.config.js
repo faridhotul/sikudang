@@ -36,7 +36,11 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    '@nuxtjs/auth',
   ],
+  router: {
+    middleware: ['auth'],
+  },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
@@ -44,6 +48,31 @@ export default {
   },
   proxy: {
     '/api/': { target: 'http://localhost:4000', pathRewrite: { '^/api/': '' } },
+  },
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: '/api/login',
+            method: 'post',
+            propertyName: 'values',
+          },
+          logout: null,
+          user: {
+            url: '/api/profile',
+            method: 'get',
+            propertyName: 'values',
+          },
+        },
+        tokenType: '',
+      },
+    },
+    redirect: {
+      login: '/login',
+      logout: '/',
+      user: '/permintaan_sc',
+    },
   },
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {

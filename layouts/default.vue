@@ -50,6 +50,10 @@
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
+      <v-btn text disabled>
+        {{ $auth.user ? $auth.user.nama_user : 'Belum Login!' }}
+      </v-btn>
+      <v-btn @click.stop="logout"> Logout </v-btn>
       <v-btn icon @click.stop="rightDrawer = !rightDrawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
@@ -109,18 +113,25 @@ export default {
           items: [{ title: 'Laporan Masuk-Keluar', to: '/lap_kel_msk' }],
           title: 'LAPORAN',
         },
-        {
-          action: 'mdi-account-settings-outline',
-          active: false,
-          items: [{ title: 'Keluar', to: '/lap_kel_msk' }],
-          title: 'PENGATURAN',
-        },
       ],
       miniVariant: false,
       right: true,
       rightDrawer: false,
       title: 'SISTEM PERMINTAAN SUKU CADANG',
     }
+  },
+  methods: {
+    logout() {
+      this.$auth
+        .logout()
+        .then(() => {
+          alert('Logout success')
+          this.$router.push('/login')
+        })
+        .catch(() => {
+          alert('Logout failed, please try again.')
+        })
+    },
   },
 }
 </script>

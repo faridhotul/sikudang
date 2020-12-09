@@ -37,7 +37,9 @@
 
             <template>
               <div class="text-center">
-                <v-btn rounded color="#00BFA5" dark> Masuk </v-btn>
+                <v-btn rounded color="#00BFA5" dark @click="login">
+                  Masuk
+                </v-btn>
               </div>
             </template>
           </v-form>
@@ -62,6 +64,18 @@ export default {
   }),
 
   methods: {
+    async login() {
+      try {
+        const response = await this.$auth.loginWith('local', {
+          data: { username: this.name, password: this.password },
+        })
+        if (response) {
+          alert('Login sukses')
+        }
+      } catch (err) {
+        alert('Login gagal')
+      }
+    },
     validate() {
       this.$refs.form.validate()
     },
