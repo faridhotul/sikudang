@@ -9,32 +9,34 @@
       app
     >
       <v-list>
-        <v-list-group
-          v-for="item in items"
-          :key="item.title"
-          v-model="item.active"
-          :prepend-icon="item.action"
-          no-action
-        >
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title"></v-list-item-title>
-            </v-list-item-content>
-          </template>
-
-          <v-list-item
-            v-for="child in item.items"
-            :key="child.title"
-            :to="child.to"
-            router
-            exact
-            link
+        <template v-for="item in items">
+          <v-list-group
+            v-if="$auth.user && item.access.includes($auth.user.tipe_user)"
+            :key="item.title"
+            v-model="item.active"
+            :prepend-icon="item.action"
+            no-action
           >
-            <v-list-item-content>
-              <v-list-item-title v-text="child.title"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title v-text="item.title"></v-list-item-title>
+              </v-list-item-content>
+            </template>
+
+            <v-list-item
+              v-for="child in item.items"
+              :key="child.title"
+              :to="child.to"
+              router
+              exact
+              link
+            >
+              <v-list-item-content>
+                <v-list-item-title v-text="child.title"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-group>
+        </template>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app>
@@ -50,6 +52,8 @@
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
+      <v-btn v-if="!notif" @click="notifSetup">Turn On Notification</v-btn>
+      <v-btn v-else text disabled>Notif Hidup</v-btn>
       <v-btn text disabled>
         {{ $auth.user ? $auth.user.nama_user : 'Belum Login!' }}
       </v-btn>
@@ -86,8 +90,12 @@ export default {
       clipped: false,
       drawer: false,
       fixed: false,
+      notif: false,
+      socket: null,
+      socketConnect: false,
       items: [
         {
+          access: ['Admin'],
           action: 'mdi-view-dashboard',
           active: false,
           items: [
@@ -99,15 +107,17 @@ export default {
           title: 'MASTER',
         },
         {
+          access: ['Admin', 'Peminta'],
           action: 'mdi-clipboard-check-outline',
           active: false,
           items: [
             { title: 'Permintaan', to: '/permintaan_sc' },
-            { title: 'Riwayat Permintaan', to: '/riwayat_permintaan' },
+            // { title: 'Riwayat Permintaan', to: '/riwayat_permintaan' },
           ],
           title: 'PERMINTAAN',
         },
         {
+          access: ['Admin'],
           action: 'mdi-card-text-outline',
           active: false,
           items: [{ title: 'Laporan Masuk-Keluar', to: '/lap_kel_msk' }],
@@ -120,6 +130,9 @@ export default {
       title: 'SISTEM PERMINTAAN SUKU CADANG',
     }
   },
+  mounted() {
+    this.notifSetup()
+  },
   methods: {
     logout() {
       this.$auth
@@ -131,6 +144,62 @@ export default {
         .catch(() => {
           alert('Logout failed, please try again.')
         })
+    },
+    async notifSetup() {
+      const granted = await this.notifRequestAndShowPermission()
+      if (granted) {
+        this.notifConnectSocket()
+      }
+    },
+    async notifRequestAndShowPermission() {
+      this.notif = false
+      if (!('Notification' in window)) {
+        alert('This browser does not support desktop notification')
+      } else if (Notification.permission === 'granted') {
+        this.notif = true
+      } else if (Notification.permission !== 'denied') {
+        const permission = await Notification.requestPermission()
+        if (permission === 'granted') {
+          this.notif = true
+        }
+      }
+      return this.notif
+    },
+    notifConnectSocket() {
+      console.log('cek sudah sampai belum')
+      this.socket = this.$nuxtSocket({
+        path: '/ws',
+      })
+      this.socket.on('connect_error', () => {
+        this.socketConnect = false
+      })
+      this.socket.on('connect', () => {
+        this.socketConnect = true
+        this.socket.on('disconnect', () => {
+          this.socketConnect = false
+        })
+        this.socket.on('notif', (payload) => {
+          if (this.$user.tipe_user === payload.tipe_user) {
+            this.notifShow({
+              title: 'Halo User',
+              body: payload.body || 'Kosong',
+              href: '/permintaan_sc',
+            })
+          }
+        })
+      })
+    },
+    notifShow({ title, body, href }) {
+      const icon = '/icon.png'
+      const notification = new Notification(title, { body, icon })
+      notification.onclick = () => {
+        if (href) {
+          window.open(href)
+        } else {
+          notification.close()
+          window.parent.focus()
+        }
+      }
     },
   },
 }

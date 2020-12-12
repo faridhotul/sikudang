@@ -37,7 +37,16 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     '@nuxtjs/auth',
+    'nuxt-socket-io',
   ],
+  io: {
+    // module options
+    sockets: [
+      {
+        name: 'main',
+      },
+    ],
+  },
   router: {
     middleware: ['auth'],
   },
@@ -45,9 +54,17 @@ export default {
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
     proxy: true,
+    proxyHeaders: false,
   },
   proxy: {
     '/api/': { target: 'http://localhost:4000', pathRewrite: { '^/api/': '' } },
+    '/ws/': {
+      target: 'http://localhost:4000',
+      pathRewrite: { '^/ws/': '/socket.io/' },
+      ws: true,
+      changeOrigin: true,
+      proxyHeaders: false,
+    },
   },
   auth: {
     strategies: {
@@ -71,7 +88,7 @@ export default {
     redirect: {
       login: '/login',
       logout: '/',
-      user: '/permintaan_sc',
+      user: '/',
     },
   },
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)

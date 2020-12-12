@@ -29,12 +29,6 @@
               rounded
             ></v-text-field>
 
-            <v-checkbox
-              v-model="checkbox"
-              label="Ingatkan Saya"
-              required
-            ></v-checkbox>
-
             <template>
               <div class="text-center">
                 <v-btn rounded color="#00BFA5" dark @click="login">
