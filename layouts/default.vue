@@ -166,7 +166,7 @@ export default {
       return this.notif
     },
     notifConnectSocket() {
-      console.log('cek sudah sampai belum')
+      // console.log('cek sudah sampai belum')
       this.socket = this.$nuxtSocket({
         path: '/ws',
       })
@@ -179,9 +179,9 @@ export default {
           this.socketConnect = false
         })
         this.socket.on('notif', (payload) => {
-          if (this.$user.tipe_user === payload.tipe_user) {
+          if (this.$auth.user.tipe_user === payload.tipe_user) {
             this.notifShow({
-              title: 'Halo User',
+              title: 'Halo ' + this.$auth.user.nama_user,
               body: payload.body || 'Kosong',
               href: '/permintaan_sc',
             })

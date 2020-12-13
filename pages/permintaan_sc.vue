@@ -170,14 +170,20 @@
                 >Tutup</v-btn
               >
               <v-btn
-                v-if="detailValue.status_per_sc == 'Diajukan'"
+                v-if="
+                  detailValue.status_per_sc == 'Diajukan' &&
+                  $auth.user.tipe_user == 'Admin'
+                "
                 color="blue darken-1"
                 text
                 @click="tolak"
                 >Tolak</v-btn
               >
               <v-btn
-                v-if="detailValue.status_per_sc == 'Diajukan'"
+                v-if="
+                  detailValue.status_per_sc == 'Diajukan' &&
+                  $auth.user.tipe_user == 'Admin'
+                "
                 color="blue darken-1"
                 text
                 @click="setuju"
