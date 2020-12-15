@@ -16,9 +16,6 @@
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
                 Tambah
               </v-btn>
-              <v-btn color="success" dark class="mb-2" v-bind="attrs" v-on="on">
-                Unduh
-              </v-btn>
             </div>
           </template>
           <v-form ref="form" v-model="valid" lazy-validation>
@@ -93,7 +90,7 @@
                         >
                           <v-spacer></v-spacer>
                           <v-btn text color="primary" @click="menu = false">
-                            Cancel
+                            Batal
                           </v-btn>
                           <v-btn
                             text
@@ -122,10 +119,8 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">
-                  Cancel
-                </v-btn>
-                <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
+                <v-btn color="blue darken-1" text @click="close"> Batal </v-btn>
+                <v-btn color="blue darken-1" text @click="save"> Simpan </v-btn>
               </v-card-actions>
             </v-card>
           </v-form>
@@ -138,7 +133,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete"
-                >Cancel</v-btn
+                >Batal</v-btn
               >
               <v-btn color="blue darken-1" text @click="deleteItemConfirm"
                 >OK</v-btn
@@ -233,7 +228,7 @@ export default {
     dialogDetail: false,
     detailValue: null,
     headers: [
-      { text: 'No', align: 'start', sortable: false, value: 'id_per_sc' },
+      { text: 'No', align: 'start', value: 'id_per_sc' },
       { text: 'Nama Suku Cadang', value: 'nama_sc' },
       { text: 'Jumlah Permintaan', value: 'jml_per_sc' },
       { text: 'Nomor Kendaraan', value: 'plat_kend' },
@@ -337,7 +332,10 @@ export default {
       ]
       this.suku_cadang = [{ nama_sc: '' }]
       this.nomor_kend = [{ plat_kend: '' }]
-      this.permintaan = [{ nama_user: '' }]
+      this.peminta = [{ nama_user: '' }]
+      if (this.$auth.user.tipe_user === 'Peminta') {
+        this.editedItem.id_user = this.$auth.user.id_user
+      }
     },
     DetailItem(item) {
       this.detailValue = item
@@ -347,6 +345,9 @@ export default {
     editItem(item) {
       this.editedIndex = this.permintaan_sc.indexOf(item)
       this.editedItem = Object.assign({}, item)
+      if (this.$auth.user.tipe_user === 'Peminta') {
+        this.editedItem.id_user = this.$auth.user.id_user
+      }
       this.dialog = true
     },
 

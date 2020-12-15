@@ -11,13 +11,6 @@
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <div>
-              <v-btn color="success" dark class="mb-2" v-bind="attrs" v-on="on">
-                Unduh
-              </v-btn>
-            </div>
-          </template>
           <v-card>
             <v-card-title>
               <span class="headline">{{ formTitle }}</span>
@@ -45,7 +38,7 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      { text: 'No', align: 'start', sortable: false, value: 'id_lap' },
+      { text: 'No', align: 'start', value: 'id_lap' },
       { text: 'Nama Suku Cadang', value: 'nama_sc' },
       { text: 'Jumlah Keluar', value: 'jml_sc_kel' },
       { text: 'Jumlah Masuk', value: 'jml_sc_msk' },

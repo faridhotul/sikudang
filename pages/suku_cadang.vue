@@ -16,9 +16,6 @@
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
                 Tambah
               </v-btn>
-              <v-btn color="success" dark class="mb-2" v-bind="attrs" v-on="on">
-                Unduh
-              </v-btn>
             </div>
           </template>
           <v-card>
@@ -51,8 +48,8 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Cancel </v-btn>
-              <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
+              <v-btn color="blue darken-1" text @click="close"> Batal </v-btn>
+              <v-btn color="blue darken-1" text @click="save"> Simpan </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -64,7 +61,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete"
-                >Cancel</v-btn
+                >Batal</v-btn
               >
               <v-btn color="blue darken-1" text @click="deleteItemConfirm"
                 >OK</v-btn
@@ -93,7 +90,7 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      { text: 'No', align: 'start', sortable: false, value: 'id_sc' },
+      { text: 'No', align: 'start', value: 'id_sc' },
       { text: 'Nama Suku Cadang', value: 'nama_sc' },
       { text: 'Satuan', value: 'satuan_sc' },
       { text: 'Aksi', value: 'actions', sortable: false },

@@ -7,7 +7,7 @@
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>DATA PLAT KENDARAAN</v-toolbar-title>
+        <v-toolbar-title>DATA NOMOR KENDARAAN</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
@@ -15,9 +15,6 @@
             <div>
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
                 Tambah
-              </v-btn>
-              <v-btn color="success" dark class="mb-2" v-bind="attrs" v-on="on">
-                Unduh
               </v-btn>
             </div>
           </template>
@@ -41,8 +38,8 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Cancel </v-btn>
-              <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
+              <v-btn color="blue darken-1" text @click="close"> Batal </v-btn>
+              <v-btn color="blue darken-1" text @click="save"> Simpan </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -54,7 +51,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete"
-                >Cancel</v-btn
+                >Batal</v-btn
               >
               <v-btn color="blue darken-1" text @click="deleteItemConfirm"
                 >OK</v-btn
@@ -83,7 +80,7 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      { text: 'No', align: 'start', sortable: true, value: 'id_kend' },
+      { text: 'No', align: 'start', value: 'id_kend' },
       { text: 'Nomor Kendaraan', value: 'plat_kend' },
       { text: 'Aksi', value: 'actions', sortable: false },
     ],
@@ -102,8 +99,8 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1
-        ? 'Tambah Plat Kendaraan'
-        : 'Edit Plat Kendaraan'
+        ? 'Tambah Nomor Kendaraan'
+        : 'Edit Nomor Kendaraan'
     },
     listKendaraan() {
       let i = 1
