@@ -375,6 +375,9 @@ export default {
       this.dialog = false
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
+        if (this.$auth.user.tipe_user === 'Peminta') {
+          this.editItem = this.$auth.user
+        }
         this.editedIndex = -1
       })
     },

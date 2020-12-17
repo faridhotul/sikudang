@@ -52,8 +52,6 @@
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
-      <v-btn v-if="!notif" @click="notifSetup">Turn On Notification</v-btn>
-      <v-btn v-else text disabled>Notif Hidup</v-btn>
       <v-btn text disabled>
         {{ $auth.user ? $auth.user.nama_user : 'Belum Login!' }}
       </v-btn>
@@ -78,7 +76,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-footer :absolute="!fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      <span>&copy; {{ new Date().getFullYear() }} Faridhotul Khasanah</span>
     </v-footer>
   </v-app>
 </template>
@@ -94,6 +92,13 @@ export default {
       socket: null,
       socketConnect: false,
       items: [
+        {
+          access: ['Admin', 'Peminta'],
+          action: 'mdi-view-grid',
+          active: false,
+          items: [{ title: 'DASHBOARD', to: '/' }],
+          title: 'DASHBOARD',
+        },
         {
           access: ['Admin'],
           action: 'mdi-view-dashboard',

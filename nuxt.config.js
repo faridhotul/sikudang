@@ -28,6 +28,8 @@ export default {
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    // Simple usage
+    '@nuxtjs/date-fns',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
