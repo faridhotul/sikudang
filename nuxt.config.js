@@ -58,6 +58,10 @@ export default {
     proxy: true,
     proxyHeaders: false,
   },
+  server: {
+    port: 3000, // default: 3000
+    host: '127.0.0.1', // default: localhost
+  },
   proxy: {
     '/api/': { target: 'http://localhost:4000', pathRewrite: { '^/api/': '' } },
     '/ws/': {
