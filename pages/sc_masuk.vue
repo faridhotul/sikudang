@@ -18,79 +18,90 @@
               </v-btn>
             </div>
           </template>
-          <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+          <v-form ref="form" v-model="valid" lazy-validation>
+            <v-card>
+              <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+              </v-card-title>
 
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-select
-                      v-model="editedItem.id_sc"
-                      label="Nama Suku Cadang"
-                      :items="suku_cadang"
-                      item-text="nama_sc"
-                      item-value="id_sc"
-                      required
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.jml_sc_msk"
-                      label="Jumlah Masuk"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-menu
-                      ref="menu"
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="editedItem.tgl_sc_msk"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="editedItem.tgl_sc_msk"
-                          label="Tanggal Masuk"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="editedItem.tgl_sc_msk"
-                        no-title
-                        scrollable
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-select
+                        v-model="editedItem.id_sc"
+                        label="Nama Suku Cadang"
+                        :items="suku_cadang"
+                        item-text="nama_sc"
+                        item-value="id_sc"
+                        :rules="[
+                          (v) => !!v || 'Nama Suku Cadang tidak boleh kosong',
+                        ]"
+                        required
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedItem.jml_sc_msk"
+                        label="Jumlah Masuk"
+                        :rules="[(v) => !!v || 'Jumlah tidak boleh kosong']"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-menu
+                        ref="menu"
+                        v-model="menu"
+                        :close-on-content-click="false"
+                        :return-value.sync="editedItem.tgl_sc_msk"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="290px"
                       >
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Batal
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(editedItem.tgl_sc_msk)"
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="editedItem.tgl_sc_msk"
+                            label="Tanggal Masuk"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            :rules="[
+                              (v) => !!v || 'Tanggal tidak boleh kosong',
+                            ]"
+                            required
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="editedItem.tgl_sc_msk"
+                          no-title
+                          scrollable
                         >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+                          <v-spacer></v-spacer>
+                          <v-btn text color="primary" @click="menu = false">
+                            Batal
+                          </v-btn>
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.menu.save(editedItem.tgl_sc_msk)"
+                          >
+                            OK
+                          </v-btn>
+                        </v-date-picker>
+                      </v-menu>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Batal </v-btn>
-              <v-btn color="blue darken-1" text @click="save"> Simpan </v-btn>
-            </v-card-actions>
-          </v-card>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close"> Batal </v-btn>
+                <v-btn color="blue darken-1" text @click="save"> Simpan </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-form>
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
@@ -126,6 +137,7 @@
 <script>
 export default {
   data: () => ({
+    valid: true,
     menu: false,
     dialog: false,
     dialogDelete: false,
@@ -162,6 +174,10 @@ export default {
     listMasuk() {
       let i = 1
       return this.sc_masuk.map((v) => {
+        v.tgl_sc_msk = this.$dateFns.format(
+          new Date(v.tgl_sc_msk || null),
+          'yyyy-MM-dd'
+        )
         v.nomor = i++
         return v
       })
@@ -266,7 +282,7 @@ export default {
         window.alert(apicreatescmsk.data.values)
         if (apicreatescmsk.data.status === 200) {
           this.loadscmasuk()
-          // this.$refs.form.resetValidation()
+          this.$refs.form.resetValidation()
           this.close()
         }
       }

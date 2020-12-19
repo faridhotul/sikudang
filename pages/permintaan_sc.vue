@@ -80,6 +80,10 @@
                             prepend-icon="mdi-calendar"
                             readonly
                             v-bind="attrs"
+                            :rules="[
+                              (v) => !!v || 'Tanggal tidak boleh kosong',
+                            ]"
+                            required
                             v-on="on"
                           ></v-text-field>
                         </template>
@@ -275,6 +279,12 @@ export default {
     listPermintaan() {
       let i = 1
       return this.permintaan_sc.map((v) => {
+        // console.log(v.tgl_per_sc)
+        // v.tgl_per_sc = this.$dateFns.format(new Date(), 'yyyy-MM-dd')
+        v.tgl_per_sc = this.$dateFns.format(
+          new Date(v.tgl_per_sc || null),
+          'yyyy-MM-dd'
+        )
         v.nomor = i++
         return v
       })
