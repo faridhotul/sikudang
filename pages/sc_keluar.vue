@@ -250,7 +250,7 @@ export default {
       ]
       this.suku_cadang = [{ nama_sc: '' }]
       this.nomor_kend = [{ plat_kend: '' }]
-      this.permintaan = [{ nama_user: '' }]
+      this.peminta = [{ nama_user: '' }]
     },
     async loadsckeluar() {
       const apisckeluar = await this.$axios.get('/api/sc_keluar')
