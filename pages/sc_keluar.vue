@@ -172,7 +172,6 @@ export default {
       { text: 'Tanggal Keluar', value: 'tgl_sc_kel' },
       { text: 'Nomor Kendaraan', value: 'plat_kend' },
       { text: 'Nama Peminta', value: 'nama_user' },
-      { text: 'Aksi', value: 'actions', sortable: false },
     ],
     suku_cadang: [],
     nomor_kend: [],
