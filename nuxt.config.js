@@ -97,6 +97,17 @@ export default {
       user: '/',
     },
   },
+  pwa: {
+    manifest: {
+      name: 'Sikudang: Sistem Suku Cadang',
+      short_name: 'Sikudang',
+      theme_color: '#ffffff',
+      author: 'Faridhotul',
+    },
+    icon: {
+      fileName: 'sikudang-icon.png',
+    },
+  },
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
